@@ -1,0 +1,10 @@
+{
+  "title": "Clipboard Manager MS",
+  "subtitle": "Responsive image grid",
+  "description": "Uses \"display\": \"grid\". Use \"media.grid.columns\" (1–4) for how many thumbnails appear per row on medium+ screens.",
+  "links": [{ "label": "Vue.js", "url": "https://vuejs.org/" }],
+  "media": {
+    "display": "grid",
+    "grid": { "columns": 2 }
+  }
+}

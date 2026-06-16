@@ -1,0 +1,10 @@
+{
+  "title": "Filmstrip layout",
+  "subtitle": "Horizontal scrolling strip",
+  "description": "\"display\": \"filmstrip\" shows thumbnails in a scrollable row. Set \"media.filmstrip.thumbHeight\" in px (number) or any CSS size string.",
+  "links": [{ "label": "MDN overflow", "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/overflow" }],
+  "media": {
+    "display": "filmstrip",
+    "filmstrip": { "thumbHeight": 120 }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Single image (defaults)",
+  "links": [{ "label": "Repository", "url": "https://github.com/" }],
+  "media": {
+    "single": {
+      "maxHeight": 320,
+      "objectFit": "contain"
+    }
+  }
+}

@@ -1,0 +1,804 @@
+/* ============================================================================
+   themes.css — design token layer (--vido-*) + AdminLTE/Bootstrap overrides
+   ----------------------------------------------------------------------------
+   Import order (in main.js): THIS FILE FIRST, then bootstrap, then adminlte,
+   then fontawesome. The token layer must win the cascade over AdminLTE/BS
+   defaults, hence the !important guards on the body/surface overrides.
+
+   Aesthetic: GitHub-dark-inspired professional chrome.
+   Surfaces step #0d1117 -> #161b22 -> #21262d; cool blue accent #58a6ff.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   1. DEFAULT (dark) THEME — full token definition
+   Every other theme re-maps this same set under html[data-theme='...'].
+   --------------------------------------------------------------------------- */
+:root,
+html[data-theme='default'] {
+  /* Surfaces — layered dark grays */
+  --vido-bg-page: #0d1117;
+  --vido-bg-panel: #161b22;
+  --vido-bg-elevated: #21262d;
+  --vido-bg-input: #0d1117;
+  --vido-bg-hover: #1c2129;
+
+  /* Borders — thin 1px separators, never heavy outlines */
+  --vido-border-default: #30363d;
+  --vido-border-muted: #21262d;
+  --vido-border-strong: #444c56;
+
+  /* Text — 4-level hierarchy */
+  --vido-text-primary: #e6edf3;
+  --vido-text-secondary: #adbac7;
+  --vido-text-muted: #768390;
+  --vido-text-heading: #f0f6fc;
+
+  /* Accent — cool blue with soft glow rings */
+  --vido-accent: #58a6ff;
+  --vido-accent-hover: #79b8ff;
+  --vido-accent-text: #ffffff;
+  --vido-accent-ring: rgba(88, 166, 255, 0.55);
+  --vido-accent-glow: 0 0 0 3px rgba(88, 166, 255, 0.25);
+  --vido-accent-tint: rgba(88, 166, 255, 0.12);
+  --vido-accent-tint-strong: rgba(88, 166, 255, 0.22);
+  --vido-accent-muted-bg: rgba(88, 166, 255, 0.10);
+
+  /* Semantic */
+  --vido-success: #3fb950;
+  --vido-warning: #d29922;
+  --vido-danger: #f85149;
+  --vido-danger-bg: rgba(248, 81, 73, 0.12);
+  --vido-export: #2ea043;
+  --vido-export-hover: #3fb950;
+
+  /* Shadows — depth without flat Material look */
+  --vido-shadow-dialog: 0 16px 48px rgba(1, 4, 9, 0.85);
+  --vido-shadow-drop: 0 6px 18px rgba(1, 4, 9, 0.55);
+  --vido-shadow-menu: 0 8px 24px rgba(1, 4, 9, 0.6);
+
+  /* Overlay + window chrome */
+  --vido-overlay: rgba(1, 4, 9, 0.7);
+  --vido-win-close-hover: #e81123;
+
+  /* Component recipe: segment control */
+  --vido-segment-bg: #161b22;
+  --vido-segment-border: #30363d;
+  --vido-segment-hover-bg: #21262d;
+  --vido-segment-active-bg: var(--vido-accent);
+  --vido-segment-active-text: #ffffff;
+  --vido-segment-divider: #30363d;
+
+  /* Component recipe: media tabs (gradient pills) */
+  --vido-media-tab-gradient: linear-gradient(180deg, #21262d, #161b22);
+  --vido-media-tab-active-gradient: linear-gradient(180deg, rgba(88, 166, 255, 0.22), rgba(88, 166, 255, 0.10));
+  --vido-media-tab-border: #30363d;
+
+  /* Component recipe: navbar gradient */
+  --vido-navbar-gradient-start: #1c2230;
+  --vido-navbar-gradient-end: #11151c;
+
+  /* Typography */
+  --vido-font-sans: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --vido-font-mono: 'SFMono-Regular', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  /* Radii */
+  --vido-radius-card: 10px;
+  --vido-radius-control: 6px;
+  --vido-radius-tab: 8px;
+  --vido-radius-pill: 999px;
+
+  color-scheme: dark;
+}
+
+/* ---------------------------------------------------------------------------
+   2. LIGHT THEME
+   --------------------------------------------------------------------------- */
+html[data-theme='light'] {
+  --vido-bg-page: #f6f8fa;
+  --vido-bg-panel: #ffffff;
+  --vido-bg-elevated: #eef1f4;
+  --vido-bg-input: #ffffff;
+  --vido-bg-hover: #f0f3f6;
+
+  --vido-border-default: #d0d7de;
+  --vido-border-muted: #e5e9ed;
+  --vido-border-strong: #afb8c1;
+
+  --vido-text-primary: #1f2328;
+  --vido-text-secondary: #57606a;
+  --vido-text-muted: #818b98;
+  --vido-text-heading: #0d1117;
+
+  --vido-accent: #0969da;
+  --vido-accent-hover: #1f6feb;
+  --vido-accent-text: #ffffff;
+  --vido-accent-ring: rgba(9, 105, 218, 0.5);
+  --vido-accent-glow: 0 0 0 3px rgba(9, 105, 218, 0.2);
+  --vido-accent-tint: rgba(9, 105, 218, 0.1);
+  --vido-accent-tint-strong: rgba(9, 105, 218, 0.18);
+  --vido-accent-muted-bg: rgba(9, 105, 218, 0.08);
+
+  --vido-success: #1a7f37;
+  --vido-warning: #9a6700;
+  --vido-danger: #cf222e;
+  --vido-danger-bg: rgba(207, 34, 46, 0.1);
+  --vido-export: #1a7f37;
+  --vido-export-hover: #2da44e;
+
+  --vido-shadow-dialog: 0 16px 48px rgba(31, 35, 40, 0.18);
+  --vido-shadow-drop: 0 6px 18px rgba(31, 35, 40, 0.12);
+  --vido-shadow-menu: 0 8px 24px rgba(31, 35, 40, 0.14);
+
+  --vido-overlay: rgba(31, 35, 40, 0.4);
+  --vido-win-close-hover: #e81123;
+
+  --vido-segment-bg: #ffffff;
+  --vido-segment-border: #d0d7de;
+  --vido-segment-hover-bg: #f0f3f6;
+  --vido-segment-active-bg: var(--vido-accent);
+  --vido-segment-active-text: #ffffff;
+  --vido-segment-divider: #d0d7de;
+
+  --vido-media-tab-gradient: linear-gradient(180deg, #ffffff, #f0f3f6);
+  --vido-media-tab-active-gradient: linear-gradient(180deg, rgba(9, 105, 218, 0.16), rgba(9, 105, 218, 0.06));
+  --vido-media-tab-border: #d0d7de;
+
+  --vido-navbar-gradient-start: #ffffff;
+  --vido-navbar-gradient-end: #eef1f4;
+
+  color-scheme: light;
+}
+
+/* ---------------------------------------------------------------------------
+   3. OAT — warm light theme
+   --------------------------------------------------------------------------- */
+html[data-theme='oat'] {
+  --vido-bg-page: #f4efe6;
+  --vido-bg-panel: #fbf7f0;
+  --vido-bg-elevated: #ece4d6;
+  --vido-bg-input: #fffdf9;
+  --vido-bg-hover: #efe8dc;
+
+  --vido-border-default: #ddd2bf;
+  --vido-border-muted: #e9e0d0;
+  --vido-border-strong: #c4b59a;
+
+  --vido-text-primary: #3a3326;
+  --vido-text-secondary: #6b6049;
+  --vido-text-muted: #978a6f;
+  --vido-text-heading: #2a2419;
+
+  --vido-accent: #b5651d;
+  --vido-accent-hover: #cd7727;
+  --vido-accent-text: #ffffff;
+  --vido-accent-ring: rgba(181, 101, 29, 0.5);
+  --vido-accent-glow: 0 0 0 3px rgba(181, 101, 29, 0.22);
+  --vido-accent-tint: rgba(181, 101, 29, 0.12);
+  --vido-accent-tint-strong: rgba(181, 101, 29, 0.2);
+  --vido-accent-muted-bg: rgba(181, 101, 29, 0.1);
+
+  --vido-success: #4d7c2f;
+  --vido-warning: #b07a17;
+  --vido-danger: #b3402f;
+  --vido-danger-bg: rgba(179, 64, 47, 0.12);
+  --vido-export: #4d7c2f;
+  --vido-export-hover: #5e9239;
+
+  --vido-shadow-dialog: 0 16px 48px rgba(74, 61, 40, 0.2);
+  --vido-shadow-drop: 0 6px 18px rgba(74, 61, 40, 0.14);
+  --vido-shadow-menu: 0 8px 24px rgba(74, 61, 40, 0.16);
+
+  --vido-overlay: rgba(58, 51, 38, 0.45);
+  --vido-win-close-hover: #e81123;
+
+  --vido-segment-bg: #fbf7f0;
+  --vido-segment-border: #ddd2bf;
+  --vido-segment-hover-bg: #efe8dc;
+  --vido-segment-active-bg: var(--vido-accent);
+  --vido-segment-active-text: #ffffff;
+  --vido-segment-divider: #ddd2bf;
+
+  --vido-media-tab-gradient: linear-gradient(180deg, #fbf7f0, #efe8dc);
+  --vido-media-tab-active-gradient: linear-gradient(180deg, rgba(181, 101, 29, 0.18), rgba(181, 101, 29, 0.07));
+  --vido-media-tab-border: #ddd2bf;
+
+  --vido-navbar-gradient-start: #fbf7f0;
+  --vido-navbar-gradient-end: #ece4d6;
+
+  color-scheme: light;
+}
+
+/* ---------------------------------------------------------------------------
+   4. SLATE — cool neutral dark theme
+   --------------------------------------------------------------------------- */
+html[data-theme='slate'] {
+  --vido-bg-page: #11151a;
+  --vido-bg-panel: #1a1f26;
+  --vido-bg-elevated: #252b34;
+  --vido-bg-input: #11151a;
+  --vido-bg-hover: #20262e;
+
+  --vido-border-default: #323a45;
+  --vido-border-muted: #252b34;
+  --vido-border-strong: #475160;
+
+  --vido-text-primary: #e3e8ee;
+  --vido-text-secondary: #a6b0bd;
+  --vido-text-muted: #6f7986;
+  --vido-text-heading: #f1f4f8;
+
+  --vido-accent: #6ea8fe;
+  --vido-accent-hover: #8bbcff;
+  --vido-accent-text: #0b0f14;
+  --vido-accent-ring: rgba(110, 168, 254, 0.5);
+  --vido-accent-glow: 0 0 0 3px rgba(110, 168, 254, 0.24);
+  --vido-accent-tint: rgba(110, 168, 254, 0.12);
+  --vido-accent-tint-strong: rgba(110, 168, 254, 0.22);
+  --vido-accent-muted-bg: rgba(110, 168, 254, 0.1);
+
+  --vido-success: #45c25b;
+  --vido-warning: #d8a72a;
+  --vido-danger: #f76d66;
+  --vido-danger-bg: rgba(247, 109, 102, 0.12);
+  --vido-export: #2ea043;
+  --vido-export-hover: #3fb950;
+
+  --vido-shadow-dialog: 0 16px 48px rgba(0, 0, 0, 0.8);
+  --vido-shadow-drop: 0 6px 18px rgba(0, 0, 0, 0.5);
+  --vido-shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.55);
+
+  --vido-overlay: rgba(5, 8, 12, 0.7);
+  --vido-win-close-hover: #e81123;
+
+  --vido-segment-bg: #1a1f26;
+  --vido-segment-border: #323a45;
+  --vido-segment-hover-bg: #252b34;
+  --vido-segment-active-bg: var(--vido-accent);
+  --vido-segment-active-text: #0b0f14;
+  --vido-segment-divider: #323a45;
+
+  --vido-media-tab-gradient: linear-gradient(180deg, #252b34, #1a1f26);
+  --vido-media-tab-active-gradient: linear-gradient(180deg, rgba(110, 168, 254, 0.22), rgba(110, 168, 254, 0.1));
+  --vido-media-tab-border: #323a45;
+
+  --vido-navbar-gradient-start: #232a33;
+  --vido-navbar-gradient-end: #151a20;
+
+  color-scheme: dark;
+}
+
+/* ---------------------------------------------------------------------------
+   5. MINT — green-accent dark theme
+   --------------------------------------------------------------------------- */
+html[data-theme='mint'] {
+  --vido-bg-page: #0c1512;
+  --vido-bg-panel: #121d19;
+  --vido-bg-elevated: #1b2823;
+  --vido-bg-input: #0c1512;
+  --vido-bg-hover: #16221d;
+
+  --vido-border-default: #294037;
+  --vido-border-muted: #1b2823;
+  --vido-border-strong: #3a5a4d;
+
+  --vido-text-primary: #e3f0ea;
+  --vido-text-secondary: #a4c2b6;
+  --vido-text-muted: #6e8c80;
+  --vido-text-heading: #f0f8f4;
+
+  --vido-accent: #3fcaa0;
+  --vido-accent-hover: #57dcb3;
+  --vido-accent-text: #04150f;
+  --vido-accent-ring: rgba(63, 202, 160, 0.5);
+  --vido-accent-glow: 0 0 0 3px rgba(63, 202, 160, 0.24);
+  --vido-accent-tint: rgba(63, 202, 160, 0.12);
+  --vido-accent-tint-strong: rgba(63, 202, 160, 0.22);
+  --vido-accent-muted-bg: rgba(63, 202, 160, 0.1);
+
+  --vido-success: #3fb950;
+  --vido-warning: #d8a72a;
+  --vido-danger: #f76d66;
+  --vido-danger-bg: rgba(247, 109, 102, 0.12);
+  --vido-export: #2ea043;
+  --vido-export-hover: #3fb950;
+
+  --vido-shadow-dialog: 0 16px 48px rgba(0, 0, 0, 0.8);
+  --vido-shadow-drop: 0 6px 18px rgba(0, 0, 0, 0.5);
+  --vido-shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.55);
+
+  --vido-overlay: rgba(4, 12, 9, 0.72);
+  --vido-win-close-hover: #e81123;
+
+  --vido-segment-bg: #121d19;
+  --vido-segment-border: #294037;
+  --vido-segment-hover-bg: #1b2823;
+  --vido-segment-active-bg: var(--vido-accent);
+  --vido-segment-active-text: #04150f;
+  --vido-segment-divider: #294037;
+
+  --vido-media-tab-gradient: linear-gradient(180deg, #1b2823, #121d19);
+  --vido-media-tab-active-gradient: linear-gradient(180deg, rgba(63, 202, 160, 0.22), rgba(63, 202, 160, 0.1));
+  --vido-media-tab-border: #294037;
+
+  --vido-navbar-gradient-start: #16241e;
+  --vido-navbar-gradient-end: #0e1814;
+
+  color-scheme: dark;
+}
+
+/* ---------------------------------------------------------------------------
+   6. LILAC — purple-accent dark theme
+   --------------------------------------------------------------------------- */
+html[data-theme='lilac'] {
+  --vido-bg-page: #120f1a;
+  --vido-bg-panel: #1a1626;
+  --vido-bg-elevated: #251f34;
+  --vido-bg-input: #120f1a;
+  --vido-bg-hover: #1f1a2d;
+
+  --vido-border-default: #382f4d;
+  --vido-border-muted: #251f34;
+  --vido-border-strong: #4f4470;
+
+  --vido-text-primary: #ebe6f3;
+  --vido-text-secondary: #b8aecb;
+  --vido-text-muted: #82768f;
+  --vido-text-heading: #f4f0fb;
+
+  --vido-accent: #b083f0;
+  --vido-accent-hover: #c39dff;
+  --vido-accent-text: #14091f;
+  --vido-accent-ring: rgba(176, 131, 240, 0.5);
+  --vido-accent-glow: 0 0 0 3px rgba(176, 131, 240, 0.24);
+  --vido-accent-tint: rgba(176, 131, 240, 0.12);
+  --vido-accent-tint-strong: rgba(176, 131, 240, 0.22);
+  --vido-accent-muted-bg: rgba(176, 131, 240, 0.1);
+
+  --vido-success: #3fb950;
+  --vido-warning: #d8a72a;
+  --vido-danger: #f76d66;
+  --vido-danger-bg: rgba(247, 109, 102, 0.12);
+  --vido-export: #2ea043;
+  --vido-export-hover: #3fb950;
+
+  --vido-shadow-dialog: 0 16px 48px rgba(0, 0, 0, 0.8);
+  --vido-shadow-drop: 0 6px 18px rgba(0, 0, 0, 0.5);
+  --vido-shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.55);
+
+  --vido-overlay: rgba(10, 6, 18, 0.72);
+  --vido-win-close-hover: #e81123;
+
+  --vido-segment-bg: #1a1626;
+  --vido-segment-border: #382f4d;
+  --vido-segment-hover-bg: #251f34;
+  --vido-segment-active-bg: var(--vido-accent);
+  --vido-segment-active-text: #14091f;
+  --vido-segment-divider: #382f4d;
+
+  --vido-media-tab-gradient: linear-gradient(180deg, #251f34, #1a1626);
+  --vido-media-tab-active-gradient: linear-gradient(180deg, rgba(176, 131, 240, 0.22), rgba(176, 131, 240, 0.1));
+  --vido-media-tab-border: #382f4d;
+
+  --vido-navbar-gradient-start: #221c30;
+  --vido-navbar-gradient-end: #150f1f;
+
+  color-scheme: dark;
+}
+
+/* ---------------------------------------------------------------------------
+   7. CREATOR — high-contrast magenta dark theme
+   --------------------------------------------------------------------------- */
+html[data-theme='creator'] {
+  --vido-bg-page: #0f0d12;
+  --vido-bg-panel: #181419;
+  --vido-bg-elevated: #241d26;
+  --vido-bg-input: #0f0d12;
+  --vido-bg-hover: #1e181f;
+
+  --vido-border-default: #382f3a;
+  --vido-border-muted: #241d26;
+  --vido-border-strong: #4f4252;
+
+  --vido-text-primary: #f0e8f0;
+  --vido-text-secondary: #c2b2c2;
+  --vido-text-muted: #8a7a8a;
+  --vido-text-heading: #faf4fa;
+
+  --vido-accent: #ff5fa2;
+  --vido-accent-hover: #ff7fb5;
+  --vido-accent-text: #1a0710;
+  --vido-accent-ring: rgba(255, 95, 162, 0.5);
+  --vido-accent-glow: 0 0 0 3px rgba(255, 95, 162, 0.26);
+  --vido-accent-tint: rgba(255, 95, 162, 0.12);
+  --vido-accent-tint-strong: rgba(255, 95, 162, 0.22);
+  --vido-accent-muted-bg: rgba(255, 95, 162, 0.1);
+
+  --vido-success: #3fb950;
+  --vido-warning: #f0b429;
+  --vido-danger: #ff6b61;
+  --vido-danger-bg: rgba(255, 107, 97, 0.12);
+  --vido-export: #2ea043;
+  --vido-export-hover: #3fb950;
+
+  --vido-shadow-dialog: 0 16px 48px rgba(0, 0, 0, 0.85);
+  --vido-shadow-drop: 0 6px 18px rgba(0, 0, 0, 0.55);
+  --vido-shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.6);
+
+  --vido-overlay: rgba(8, 5, 9, 0.75);
+  --vido-win-close-hover: #e81123;
+
+  --vido-segment-bg: #181419;
+  --vido-segment-border: #382f3a;
+  --vido-segment-hover-bg: #241d26;
+  --vido-segment-active-bg: var(--vido-accent);
+  --vido-segment-active-text: #1a0710;
+  --vido-segment-divider: #382f3a;
+
+  --vido-media-tab-gradient: linear-gradient(180deg, #241d26, #181419);
+  --vido-media-tab-active-gradient: linear-gradient(180deg, rgba(255, 95, 162, 0.22), rgba(255, 95, 162, 0.1));
+  --vido-media-tab-border: #382f3a;
+
+  --vido-navbar-gradient-start: #221a23;
+  --vido-navbar-gradient-end: #130f14;
+
+  color-scheme: dark;
+}
+
+/* ---------------------------------------------------------------------------
+   8. FAMILY — friendly warm light theme
+   --------------------------------------------------------------------------- */
+html[data-theme='family'] {
+  --vido-bg-page: #fff7f2;
+  --vido-bg-panel: #ffffff;
+  --vido-bg-elevated: #fdede3;
+  --vido-bg-input: #ffffff;
+  --vido-bg-hover: #fcf0e8;
+
+  --vido-border-default: #f0d8c8;
+  --vido-border-muted: #f7e6da;
+  --vido-border-strong: #e0b89f;
+
+  --vido-text-primary: #3d2b20;
+  --vido-text-secondary: #6e5648;
+  --vido-text-muted: #9c8275;
+  --vido-text-heading: #2c1d14;
+
+  --vido-accent: #ff7a59;
+  --vido-accent-hover: #ff8f72;
+  --vido-accent-text: #ffffff;
+  --vido-accent-ring: rgba(255, 122, 89, 0.5);
+  --vido-accent-glow: 0 0 0 3px rgba(255, 122, 89, 0.22);
+  --vido-accent-tint: rgba(255, 122, 89, 0.12);
+  --vido-accent-tint-strong: rgba(255, 122, 89, 0.2);
+  --vido-accent-muted-bg: rgba(255, 122, 89, 0.1);
+
+  --vido-success: #2da44e;
+  --vido-warning: #bf8700;
+  --vido-danger: #d6402c;
+  --vido-danger-bg: rgba(214, 64, 44, 0.1);
+  --vido-export: #2da44e;
+  --vido-export-hover: #3fb950;
+
+  --vido-shadow-dialog: 0 16px 48px rgba(94, 58, 38, 0.2);
+  --vido-shadow-drop: 0 6px 18px rgba(94, 58, 38, 0.14);
+  --vido-shadow-menu: 0 8px 24px rgba(94, 58, 38, 0.16);
+
+  --vido-overlay: rgba(61, 43, 32, 0.4);
+  --vido-win-close-hover: #e81123;
+
+  --vido-segment-bg: #ffffff;
+  --vido-segment-border: #f0d8c8;
+  --vido-segment-hover-bg: #fcf0e8;
+  --vido-segment-active-bg: var(--vido-accent);
+  --vido-segment-active-text: #ffffff;
+  --vido-segment-divider: #f0d8c8;
+
+  --vido-media-tab-gradient: linear-gradient(180deg, #ffffff, #fcf0e8);
+  --vido-media-tab-active-gradient: linear-gradient(180deg, rgba(255, 122, 89, 0.18), rgba(255, 122, 89, 0.07));
+  --vido-media-tab-border: #f0d8c8;
+
+  --vido-navbar-gradient-start: #ffffff;
+  --vido-navbar-gradient-end: #fdede3;
+
+  color-scheme: light;
+}
+
+/* ============================================================================
+   GLOBAL BASE + OVERRIDES
+   These beat AdminLTE/Bootstrap white defaults. Keep !important on the
+   surface/body rules so the token layer wins regardless of import order.
+   ============================================================================ */
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html[data-theme] body {
+  background: var(--vido-bg-page) !important;
+  color: var(--vido-text-primary) !important;
+  font-family: var(--vido-font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings inherit heading token */
+html[data-theme] h1,
+html[data-theme] h2,
+html[data-theme] h3,
+html[data-theme] h4,
+html[data-theme] h5,
+html[data-theme] h6 {
+  color: var(--vido-text-heading);
+}
+
+html[data-theme] a {
+  color: var(--vido-accent);
+}
+html[data-theme] a:hover {
+  color: var(--vido-accent-hover);
+}
+
+/* ---------------------------------------------------------------------------
+   Card override — the core panel pattern: .card.vido-card
+   --------------------------------------------------------------------------- */
+.card.vido-card {
+  background: var(--vido-bg-panel);
+  border: 1px solid var(--vido-border-muted);
+  border-radius: var(--vido-radius-card);
+  box-shadow: var(--vido-shadow-dialog);
+  color: var(--vido-text-primary);
+  margin-bottom: 0;
+}
+
+.card.vido-card > .card-header,
+.card.vido-card > .card-footer {
+  background: var(--vido-bg-page);
+  border-color: var(--vido-border-muted);
+  color: var(--vido-text-primary);
+}
+
+.card.vido-card > .card-header {
+  border-bottom: 1px solid var(--vido-border-muted);
+  border-top-left-radius: var(--vido-radius-card);
+  border-top-right-radius: var(--vido-radius-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  padding: 8px 14px;
+}
+
+.card.vido-card > .card-footer {
+  border-top: 1px solid var(--vido-border-muted);
+  border-bottom-left-radius: var(--vido-radius-card);
+  border-bottom-right-radius: var(--vido-radius-card);
+  font-size: 11px;
+  color: var(--vido-text-muted);
+  padding: 8px 14px;
+}
+
+.card.vido-card > .card-header .card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--vido-text-heading);
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.2;
+}
+
+.card.vido-card > .card-header .card-title i {
+  font-size: 13px;
+  color: var(--vido-text-secondary);
+}
+
+.card.vido-card > .card-body {
+  background: var(--vido-bg-panel);
+  color: var(--vido-text-primary);
+  padding: 14px;
+}
+
+/* ---------------------------------------------------------------------------
+   Form controls — consistent across settings/panels
+   --------------------------------------------------------------------------- */
+html[data-theme] input:not([type='checkbox']):not([type='radio']):not([type='range']),
+html[data-theme] select,
+html[data-theme] textarea,
+.vido-card .form-control {
+  background: var(--vido-bg-input);
+  border: 1px solid var(--vido-border-muted);
+  color: var(--vido-text-primary);
+  padding: 6px 10px;
+  border-radius: var(--vido-radius-control);
+  font-size: 12px;
+  transition: border-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+html[data-theme] input:focus,
+html[data-theme] select:focus,
+html[data-theme] textarea:focus,
+.vido-card .form-control:focus {
+  border-color: var(--vido-accent);
+  box-shadow: var(--vido-accent-glow);
+  outline: none;
+}
+
+html[data-theme] input::placeholder,
+html[data-theme] textarea::placeholder {
+  color: var(--vido-text-muted);
+}
+
+/* Bootstrap form-control hard override (it forces white bg) */
+html[data-theme] .form-control {
+  background: var(--vido-bg-input) !important;
+  color: var(--vido-text-primary) !important;
+  border-color: var(--vido-border-muted) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Scrollbars (webkit) — subtle, theme-aware
+   --------------------------------------------------------------------------- */
+html[data-theme] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+html[data-theme] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+html[data-theme] ::-webkit-scrollbar-thumb {
+  background: var(--vido-border-strong);
+  border-radius: 6px;
+  border: 2px solid var(--vido-bg-page);
+}
+html[data-theme] ::-webkit-scrollbar-thumb:hover {
+  background: var(--vido-text-muted);
+}
+
+/* ---------------------------------------------------------------------------
+   Focus contract — accent ring everywhere, never browser default
+   --------------------------------------------------------------------------- */
+html[data-theme] :focus-visible {
+  outline: 2px solid var(--vido-accent-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ============================================================================
+   OPTIONAL: TV / large-display mode — html[data-medio-ui='tv']
+   ============================================================================ */
+html[data-medio-ui='tv'] {
+  font-size: 11px;
+  cursor: none;
+}
+html[data-medio-ui='tv'] .card.vido-card > .card-body,
+html[data-medio-ui='tv'] .card.vido-card > .card-header,
+html[data-medio-ui='tv'] .card.vido-card > .card-footer {
+  padding: 6px 8px;
+}
+
+/* ============================================================================
+   BOOTSTRAP / ADMINLTE BRIDGE — map --vido-* tokens to Bootstrap CSS vars
+   so AdminLTE navbar, sidebar, cards, buttons, and alerts follow the theme.
+   ============================================================================ */
+html[data-theme] {
+  --bs-body-bg: var(--vido-bg-page);
+  --bs-body-color: var(--vido-text-primary);
+  --bs-body-color-rgb: 230, 237, 243;
+  --bs-emphasis-color: var(--vido-text-heading);
+  --bs-secondary-color: var(--vido-text-secondary);
+  --bs-tertiary-color: var(--vido-text-muted);
+  --bs-secondary-bg: var(--vido-bg-panel);
+  --bs-tertiary-bg: var(--vido-bg-elevated);
+  --bs-border-color: var(--vido-border-default);
+  --bs-border-color-translucent: var(--vido-border-muted);
+  --bs-link-color: var(--vido-accent);
+  --bs-link-hover-color: var(--vido-accent-hover);
+  --bs-primary: var(--vido-accent);
+  --bs-primary-rgb: 88, 166, 255;
+  --bs-success: var(--vido-success);
+  --bs-warning: var(--vido-warning);
+  --bs-danger: var(--vido-danger);
+}
+
+html[data-theme='light'],
+html[data-theme='oat'],
+html[data-theme='family'] {
+  --bs-body-color-rgb: 31, 35, 40;
+  --bs-primary-rgb: 9, 105, 218;
+}
+
+html[data-theme='oat'] {
+  --bs-primary-rgb: 181, 101, 29;
+}
+
+html[data-theme='family'] {
+  --bs-primary-rgb: 255, 122, 89;
+}
+
+html[data-theme='slate'] {
+  --bs-primary-rgb: 110, 168, 254;
+}
+
+html[data-theme='mint'] {
+  --bs-primary-rgb: 63, 202, 160;
+}
+
+html[data-theme='lilac'] {
+  --bs-primary-rgb: 176, 131, 240;
+}
+
+html[data-theme='creator'] {
+  --bs-primary-rgb: 255, 95, 162;
+}
+
+html[data-theme] .app-header.navbar,
+html[data-theme] .app-sidebar {
+  background-color: var(--vido-bg-panel) !important;
+  border-color: var(--vido-border-muted) !important;
+  color: var(--vido-text-primary) !important;
+}
+
+html[data-theme] .app-sidebar .nav-link {
+  color: var(--vido-text-secondary);
+}
+
+html[data-theme] .app-sidebar .nav-link:hover,
+html[data-theme] .app-sidebar .nav-link.active {
+  color: var(--vido-accent);
+  background-color: var(--vido-accent-tint);
+}
+
+html[data-theme] .app-sidebar .brand-link,
+html[data-theme] .app-sidebar .brand-text {
+  color: var(--vido-text-heading) !important;
+}
+
+html[data-theme] .card {
+  background-color: var(--vido-bg-panel);
+  border-color: var(--vido-border-muted);
+  color: var(--vido-text-primary);
+}
+
+html[data-theme] .card-header,
+html[data-theme] .card-footer {
+  background-color: var(--vido-bg-page);
+  border-color: var(--vido-border-muted);
+  color: var(--vido-text-primary);
+}
+
+html[data-theme] .btn-primary {
+  --bs-btn-bg: var(--vido-accent);
+  --bs-btn-border-color: var(--vido-accent);
+  --bs-btn-hover-bg: var(--vido-accent-hover);
+  --bs-btn-hover-border-color: var(--vido-accent-hover);
+  --bs-btn-color: var(--vido-accent-text);
+}
+
+html[data-theme] .btn-outline-secondary {
+  --bs-btn-color: var(--vido-text-secondary);
+  --bs-btn-border-color: var(--vido-border-default);
+  --bs-btn-hover-bg: var(--vido-bg-hover);
+  --bs-btn-hover-border-color: var(--vido-accent);
+  --bs-btn-hover-color: var(--vido-accent);
+}
+
+html[data-theme] .text-muted {
+  color: var(--vido-text-muted) !important;
+}
+
+html[data-theme] .alert-warning {
+  background-color: var(--vido-accent-tint);
+  border-color: var(--vido-border-default);
+  color: var(--vido-text-primary);
+}
+
+html[data-theme] code {
+  color: var(--vido-accent);
+  background-color: var(--vido-accent-muted-bg);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}

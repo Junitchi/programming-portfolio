@@ -1,0 +1,17 @@
+{
+  "title": "MSGeolocator",
+  "subtitle": "AdminLTE card + Bootstrap carousel",
+  "description": "Set \"media.display\" to \"carousel\". Optional \"media.carousel\" controls autoplay interval (ms), indicators, and arrows.",
+  "links": [
+    { "label": "Bootstrap carousel", "url": "https://getbootstrap.com/docs/5.3/components/carousel/" },
+    { "label": "AdminLTE", "url": "https://adminlte.io/" }
+  ],
+  "media": {
+    "display": "carousel",
+    "carousel": {
+      "interval": 4000,
+      "indicators": true,
+      "controls": true
+    }
+  }
+}

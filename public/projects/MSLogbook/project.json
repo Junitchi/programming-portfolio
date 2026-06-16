@@ -1,0 +1,9 @@
+{
+  "title": "MSLogbook",
+  "subtitle": "Vertical sequence",
+  "description": "\"display\": \"stack\" stacks every image full width in reading order. Good for storyboards or long screenshots.",
+  "links": [],
+  "media": {
+    "display": "stack"
+  }
+}
