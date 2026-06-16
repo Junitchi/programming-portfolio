@@ -13,6 +13,7 @@
         :slug="item.slug"
         :project="item.project || {}"
         :error="item.error"
+        :base-path="basePath"
         @view="onView"
       />
     </div>
@@ -37,6 +38,10 @@ export default {
     loadError: {
       type: String,
       default: null
+    },
+    basePath: {
+      type: String,
+      default: 'projects'
     }
   },
   methods: {

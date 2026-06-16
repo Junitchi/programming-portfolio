@@ -87,8 +87,8 @@
             <div class="col">
               <h3 class="mb-0">{{ contentTitle }}</h3>
               <p v-if="activeTab === 'projects' && !selectedSlug" class="text-muted small mb-0">
-                Each card is loaded from a folder under
-                <code>public/projects/</code>. See
+                Highlights and projects are loaded from folders under
+                <code>public/highlights/</code> and <code>public/projects/</code>. See
                 <code>public/projects/CONFIGURATION.md</code> for the JSON schema.
               </p>
               <p v-else-if="activeTab === 'projects' && selectedSlug" class="text-muted small mb-0">
@@ -108,29 +108,43 @@
             <div v-if="selectedSlug && selectedEntry" id="viewer">
               <div class="mb-3">
                 <button type="button" class="btn btn-outline-secondary" @click="clearViewer">
-                  <i class="bi bi-arrow-left me-1"></i>All projects
+                  <i class="bi bi-arrow-left me-1"></i>{{ selectedKind === 'highlight' ? 'All highlights' : 'All projects' }}
                 </button>
               </div>
               <ProjectViewer
                 :slug="selectedEntry.slug"
                 :project="selectedEntry.project || {}"
                 :error="selectedEntry.error"
+                :base-path="viewerBasePath"
               />
             </div>
             <div v-else-if="selectedSlug" class="alert alert-warning">
-              Project not found.
+              {{ selectedKind === 'highlight' ? 'Highlight' : 'Project' }} not found.
               <button type="button" class="btn btn-link alert-link p-0 ms-1" @click="clearViewer">
                 Back to list
               </button>
             </div>
-            <ProjectPortfolio
-              v-else
-              id="projects"
-              :items="items"
-              :loading="loading"
-              :load-error="loadError"
-              @view-project="selectedSlug = $event"
-            />
+            <template v-else>
+              <section v-if="highlights.length || highlightsLoading || highlightsError" id="highlights" class="mb-5">
+                <h4 class="mb-3">Highlights</h4>
+                <ProjectPortfolio
+                  :items="highlights"
+                  :loading="highlightsLoading"
+                  :load-error="highlightsError"
+                  base-path="highlights"
+                  @view-project="onViewHighlight"
+                />
+              </section>
+              <section id="projects">
+                <h4 v-if="highlights.length || highlightsLoading || highlightsError" class="mb-3">Projects</h4>
+                <ProjectPortfolio
+                  :items="items"
+                  :loading="loading"
+                  :load-error="loadError"
+                  @view-project="onViewProject"
+                />
+              </section>
+            </template>
           </template>
           <div v-else id="certificates">
             <CertificatePortfolio />
@@ -160,7 +174,7 @@
 </template>
 
 <script>
-import { loadAllProjects } from './services/portfolio'
+import { loadAllProjects, loadAllHighlights } from './services/portfolio'
 import ProjectPortfolio from './components/ProjectPortfolio.vue'
 import ProjectViewer from './components/ProjectViewer.vue'
 import CertificatePortfolio from './components/CertificatePortfolio.vue'
@@ -192,7 +206,11 @@ export default {
       items: [],
       loading: true,
       loadError: null,
+      highlights: [],
+      highlightsLoading: true,
+      highlightsError: null,
       selectedSlug: null,
+      selectedKind: 'project',
       theme,
       accent: getThemeAccent(theme),
       themes: THEMES,
@@ -203,7 +221,11 @@ export default {
   computed: {
     selectedEntry () {
       if (!this.selectedSlug) return null
-      return this.items.find((i) => i.slug === this.selectedSlug) || null
+      const list = this.selectedKind === 'highlight' ? this.highlights : this.items
+      return list.find((i) => i.slug === this.selectedSlug) || null
+    },
+    viewerBasePath () {
+      return this.selectedKind === 'highlight' ? 'highlights' : 'projects'
     },
     contentTitle () {
       if (this.activeTab === 'certificates') {
@@ -230,6 +252,14 @@ export default {
     } finally {
       this.loading = false
     }
+
+    try {
+      this.highlights = await loadAllHighlights()
+    } catch (e) {
+      this.highlightsError = e.message || String(e)
+    } finally {
+      this.highlightsLoading = false
+    }
   },
   methods: {
     onThemeChange (themeId) {
@@ -249,17 +279,29 @@ export default {
     goHome () {
       this.activeTab = 'projects'
       this.selectedSlug = null
+      this.selectedKind = 'project'
     },
     openProjects () {
       this.activeTab = 'projects'
       this.selectedSlug = null
+      this.selectedKind = 'project'
     },
     openCertificates () {
       this.activeTab = 'certificates'
       this.selectedSlug = null
+      this.selectedKind = 'project'
     },
     clearViewer () {
       this.selectedSlug = null
+      this.selectedKind = 'project'
+    },
+    onViewProject (slug) {
+      this.selectedKind = 'project'
+      this.selectedSlug = slug
+    },
+    onViewHighlight (slug) {
+      this.selectedKind = 'highlight'
+      this.selectedSlug = slug
     }
   }
 }

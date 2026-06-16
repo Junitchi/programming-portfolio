@@ -228,6 +228,10 @@ export default {
     project: {
       type: Object,
       required: true
+    },
+    basePath: {
+      type: String,
+      default: 'projects'
     }
   },
   computed: {
@@ -238,7 +242,7 @@ export default {
       const names = this.project?.media?.images
       if (!Array.isArray(names)) return []
       const base = this.baseUrl.replace(/\/?$/, '/')
-      return names.map((f) => `${base}projects/${this.slug}/${encodeURIComponent(f)}`)
+      return names.map((f) => `${base}${this.basePath}/${this.slug}/${encodeURIComponent(f)}`)
     },
     displayType () {
       const explicit = this.project?.media?.display

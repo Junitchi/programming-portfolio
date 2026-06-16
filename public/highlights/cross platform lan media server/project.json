@@ -1,0 +1,12 @@
+{
+  "title": "Medio Streamspace",
+  "subtitle": "Personal LAN cloud server",
+  "description": "\n\nMedio Streamspace is your hub for streaming, sharing, and showcasing your content.  A dedicated space where your media lives, grows, and reaches the audiences who care most.\n\nWe’re building a new way for creators and audiences to connect, create, and share. If you want to be part of the very first wave, drop your email below.\n\nWhen our Kickstarter campaign goes live, I’ll send you the direct link so you can check it out, support it early, and help shape the future of Zorro Forge.\n\nThanks for being here at the start of something big. \n \n Want to be notified when the Kickstarter campaign goes live, join our contact form: https://forms.gle/zk389Kc9FDAxYE8i8",
+  "links": [{ "label": "Promotional Video", "url": "https://www.youtube.com/watch?v=iZM1vGFeYFs" }],
+  "media": {
+    "single": {
+      "maxHeight": 320,
+      "objectFit": "contain"
+    }
+  }
+}

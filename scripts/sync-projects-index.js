@@ -1,7 +1,7 @@
 /**
- * Scans public/projects/ for subfolders and:
- *  - writes public/projects/_index.json (project slugs)
- *  - writes public/projects/<slug>/_images.json (image filenames in that folder)
+ * Scans public/projects/ and public/highlights/ for subfolders and:
+ *  - writes <dir>/_index.json (folder slugs)
+ *  - writes <dir>/<slug>/_images.json (image filenames in that folder)
  *
  * Browsers cannot list directories at runtime; the manifest enables loading all images without
  * listing them in project.json.
@@ -24,30 +24,36 @@ function listImagesInFolder (absDir) {
     .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
 }
 
-const projectsDir = path.join(__dirname, '..', 'public', 'projects')
-const indexPath = path.join(projectsDir, '_index.json')
+function syncContentDir (contentDir, indexKey, label) {
+  if (!fs.existsSync(contentDir)) {
+    fs.mkdirSync(contentDir, { recursive: true })
+  }
 
-if (!fs.existsSync(projectsDir)) {
-  fs.mkdirSync(projectsDir, { recursive: true })
+  const slugs = fs
+    .readdirSync(contentDir, { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name)
+    .filter((name) => !name.startsWith('.'))
+    .sort()
+
+  const indexPath = path.join(contentDir, '_index.json')
+  fs.writeFileSync(indexPath, JSON.stringify({ [indexKey]: slugs }, null, 2))
+  console.log(
+    `[sync-projects-index] Wrote ${slugs.length} ${label} folder(s) to ${path.relative(process.cwd(), indexPath)}`
+  )
+
+  for (const slug of slugs) {
+    const dir = path.join(contentDir, slug)
+    const images = listImagesInFolder(dir)
+    const manifestPath = path.join(dir, '_images.json')
+    fs.writeFileSync(manifestPath, JSON.stringify({ images }, null, 2))
+    console.log(`[sync-projects-index]   ${label}/${slug}/_images.json (${images.length} image(s))`)
+  }
 }
 
-const slugs = fs
-  .readdirSync(projectsDir, { withFileTypes: true })
-  .filter((d) => d.isDirectory())
-  .map((d) => d.name)
-  .filter((name) => !name.startsWith('.'))
-  .sort()
-
-fs.writeFileSync(indexPath, JSON.stringify({ projects: slugs }, null, 2))
-console.log(`[sync-projects-index] Wrote ${slugs.length} project folder(s) to ${path.relative(process.cwd(), indexPath)}`)
-
-for (const slug of slugs) {
-  const dir = path.join(projectsDir, slug)
-  const images = listImagesInFolder(dir)
-  const manifestPath = path.join(dir, '_images.json')
-  fs.writeFileSync(manifestPath, JSON.stringify({ images }, null, 2))
-  console.log(`[sync-projects-index]   ${slug}/_images.json (${images.length} image(s))`)
-}
+const publicDir = path.join(__dirname, '..', 'public')
+syncContentDir(path.join(publicDir, 'projects'), 'projects', 'projects')
+syncContentDir(path.join(publicDir, 'highlights'), 'highlights', 'highlights')
 
 /**
  * Certificates: recursively scan public/certificates/ for .pdf files and write _manifest.json.

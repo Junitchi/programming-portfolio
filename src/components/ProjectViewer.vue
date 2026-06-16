@@ -9,7 +9,7 @@
         <div v-if="error" class="alert alert-warning">{{ error }}</div>
         <template v-else>
           <div class="project-viewer-media mb-4">
-            <ProjectMedia :slug="slug" :project="project" />
+            <ProjectMedia :slug="slug" :project="project" :base-path="basePath" />
           </div>
           <p
             v-if="project.description"
@@ -56,6 +56,10 @@ export default {
     error: {
       type: String,
       default: null
+    },
+    basePath: {
+      type: String,
+      default: 'projects'
     }
   },
   computed: {
