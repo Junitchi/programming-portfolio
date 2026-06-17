@@ -38,6 +38,7 @@ Only items with non-empty `label` and `url` are shown. Use full URLs (including 
 | Field | Purpose |
 | --- | --- |
 | `images` | **Optional override.** Omit this key to use **all images from the folder** (via generated `_images.json`). If you set `images` to a list, only those files are used. Use `images: []` to show **no** images even when files exist. |
+| `video` | **Optional embed URL** (YouTube or Vimeo watch or embed link). When set, shows an embedded player **instead of images**. Intended for highlights; works for projects too. |
 | `display` | How to show images. If omitted, the app picks a default (see below) |
 
 #### Default `display` if omitted
@@ -95,6 +96,18 @@ Maps to Bootstrap `row-cols-md-<columns>` (one column on extra-small screens).
 | `objectFit` | string | `"contain"` | Passed to CSS `object-fit` |
 
 When `display` is `single` but several filenames are in the effective list, only the **first** is shown.
+
+##### `media.video` (embedded player instead of images)
+
+Set a YouTube or Vimeo URL. Supported forms include `youtube.com/watch?v=…`, `youtu.be/…`, `youtube.com/embed/…`, `youtube.com/shorts/…`, `vimeo.com/123456`, and `player.vimeo.com/video/123456`.
+
+When `media.video` is set, images are not shown in the card or viewer (folder images can remain on disk).
+
+```json
+"media": {
+  "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+}
+```
 
 ---
 

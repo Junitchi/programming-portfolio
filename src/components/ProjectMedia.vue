@@ -55,6 +55,23 @@
       Optionally set <code>media.images</code> in <code>project.json</code> to override the folder list.
     </div>
 
+    <div v-else-if="displayType === 'video-invalid'" class="text-muted small">
+      Could not embed video from <code>media.video</code>. Use a YouTube or Vimeo watch or embed URL.
+    </div>
+
+    <!-- Embedded video (YouTube / Vimeo) -->
+    <div v-else-if="displayType === 'video'" class="project-media__embed rounded shadow-sm overflow-hidden">
+      <div class="project-media__embed-ratio">
+        <iframe
+          :src="videoEmbedUrl"
+          :title="videoTitle"
+          class="project-media__embed-iframe"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        />
+      </div>
+    </div>
+
     <!-- Carousel (Bootstrap) -->
     <div
       v-else-if="displayType === 'carousel'"
@@ -212,6 +229,64 @@
 </template>
 
 <script>
+/**
+ * Normalizes a YouTube or Vimeo watch/embed URL to an iframe-safe embed URL.
+ * Returns null when the URL is missing or not recognized.
+ */
+function toVideoEmbedUrl (url) {
+  if (!url || typeof url !== 'string') return null
+  const trimmed = url.trim()
+  if (!trimmed) return null
+
+  try {
+    const parsed = new URL(trimmed)
+    const host = parsed.hostname.replace(/^www\./, '')
+
+    if (host === 'youtube.com' || host === 'm.youtube.com' || host === 'youtube-nocookie.com') {
+      let id = null
+      if (parsed.pathname.startsWith('/embed/')) {
+        id = parsed.pathname.split('/').filter(Boolean)[1]
+      } else if (parsed.pathname.startsWith('/shorts/')) {
+        id = parsed.pathname.split('/').filter(Boolean)[1]
+      } else {
+        id = parsed.searchParams.get('v')
+      }
+      if (id) {
+        const embed = new URL(`https://www.youtube-nocookie.com/embed/${id}`)
+        const start = parsed.searchParams.get('t') || parsed.searchParams.get('start')
+        if (start) embed.searchParams.set('start', String(start).replace(/s$/i, ''))
+        return embed.toString()
+      }
+    }
+
+    if (host === 'youtu.be') {
+      const id = parsed.pathname.split('/').filter(Boolean)[0]
+      if (id) {
+        const embed = new URL(`https://www.youtube-nocookie.com/embed/${id}`)
+        const start = parsed.searchParams.get('t') || parsed.searchParams.get('start')
+        if (start) embed.searchParams.set('start', String(start).replace(/s$/i, ''))
+        return embed.toString()
+      }
+    }
+
+    if (host === 'vimeo.com') {
+      const id = parsed.pathname.split('/').filter(Boolean)[0]
+      if (id && /^\d+$/.test(id)) {
+        return `https://player.vimeo.com/video/${id}`
+      }
+    }
+
+    if (host === 'player.vimeo.com') {
+      const match = parsed.pathname.match(/\/video\/(\d+)/)
+      if (match) return `https://player.vimeo.com/video/${match[1]}`
+    }
+
+    return null
+  } catch {
+    return null
+  }
+}
+
 export default {
   name: 'ProjectMedia',
   data () {
@@ -244,10 +319,24 @@ export default {
       const base = this.baseUrl.replace(/\/?$/, '/')
       return names.map((f) => `${base}${this.basePath}/${this.slug}/${encodeURIComponent(f)}`)
     },
+    rawVideoUrl () {
+      const v = this.project?.media?.video
+      return typeof v === 'string' ? v.trim() : ''
+    },
+    videoEmbedUrl () {
+      return toVideoEmbedUrl(this.rawVideoUrl)
+    },
+    videoTitle () {
+      return this.project?.title ? `${this.project.title} video` : 'Project video'
+    },
     displayType () {
-      const explicit = this.project?.media?.display
+      if (this.videoEmbedUrl) return 'video'
+
       const n = this.imageUrls.length
+      if (this.rawVideoUrl && !this.videoEmbedUrl && n === 0) return 'video-invalid'
       if (n === 0) return 'none'
+
+      const explicit = this.project?.media?.display
       if (explicit) return explicit
       if (n === 1) return 'single'
       return 'grid'
@@ -355,6 +444,21 @@ export default {
   height: var(--filmstrip-thumb-height, 140px);
   width: auto;
   object-fit: cover;
+}
+
+.project-media__embed-ratio {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  background: #000;
+}
+
+.project-media__embed-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 </style>
 
