@@ -1,14 +1,14 @@
 {
   "projects": [
-    "MultiRoute Functionalities",
-    "WDCS Functionalities",
-    "MS-SRI",
-    "MSLogbook",
     "Cliboard Manager Legacy",
     "Clipboard Manager MS",
-    "SQL Data Generator",
-    "WDCS Client Printer Provider",
+    "MS-SRI",
     "MSGeolocator",
-    "Scanner Simulator Enhanced"
+    "MSLogbook",
+    "MultiRoute Functionalities",
+    "SQL Data Generator",
+    "Scanner Simulator Enhanced",
+    "WDCS Client Printer Provider",
+    "WDCS Functionalities"
   ]
 }
