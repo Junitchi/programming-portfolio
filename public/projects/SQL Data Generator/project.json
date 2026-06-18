@@ -1,5 +1,6 @@
 {
   "title": "SQL Data Generator",
+  "subtitle": "Full stack development",
   "description": "SQL Data Generations - I created a tool that generated queries to do common software testing. I added profiles that defined the table schema and the data entry was written there in bulk.\n\nThis would then create the individual and bulk insert, update and delete. It allowed csv, json and textual import and export.\n\nThis was specially useful when making testing data since it allowed to delete all records, insert the test case and test. I didn't have to invent and keep track of random data that could get convoluted after perfoming the software functions.\n\nThis also worked for giving demos since you could erase the test cases, add the data you know how it will behave and effectively show the functions working as they always do.",
   "links": [
     { "label": "Vue.js", "url": "https://vuejs.org/" },

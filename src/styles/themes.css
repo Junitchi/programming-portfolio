@@ -775,7 +775,43 @@ html[data-theme] .btn-primary {
   --bs-btn-border-color: var(--vido-accent);
   --bs-btn-hover-bg: var(--vido-accent-hover);
   --bs-btn-hover-border-color: var(--vido-accent-hover);
+  --bs-btn-hover-color: var(--vido-accent-text);
+  --bs-btn-active-bg: var(--vido-accent-hover);
+  --bs-btn-active-border-color: var(--vido-accent-hover);
+  --bs-btn-active-color: var(--vido-accent-text);
   --bs-btn-color: var(--vido-accent-text);
+  color: var(--bs-btn-color);
+  background-color: var(--bs-btn-bg);
+  border-color: var(--bs-btn-border-color);
+}
+
+html[data-theme] .btn-outline-primary {
+  --bs-btn-color: var(--vido-accent);
+  --bs-btn-border-color: var(--vido-accent);
+  --bs-btn-bg: transparent;
+  --bs-btn-hover-color: var(--vido-accent-text);
+  --bs-btn-hover-bg: var(--vido-accent);
+  --bs-btn-hover-border-color: var(--vido-accent-hover);
+  --bs-btn-active-color: var(--vido-accent-text);
+  --bs-btn-active-bg: var(--vido-accent-hover);
+  --bs-btn-active-border-color: var(--vido-accent-hover);
+  color: var(--bs-btn-color);
+  background-color: var(--bs-btn-bg);
+  border-color: var(--bs-btn-border-color);
+}
+
+html[data-theme] .btn-outline-primary:hover,
+html[data-theme] .btn-outline-primary:focus-visible {
+  color: var(--bs-btn-hover-color);
+  background-color: var(--bs-btn-hover-bg);
+  border-color: var(--bs-btn-hover-border-color);
+}
+
+html[data-theme] .btn-primary:hover,
+html[data-theme] .btn-primary:focus-visible {
+  color: var(--bs-btn-hover-color);
+  background-color: var(--bs-btn-hover-bg);
+  border-color: var(--bs-btn-hover-border-color);
 }
 
 html[data-theme] .btn-outline-secondary {

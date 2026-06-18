@@ -1,5 +1,6 @@
 {
   "title": "MSGeolocator",
+  "subtitle": "Full stack development",
   "description": "MS-Geolocator is a database agnositic azure location fetcher. It would ask for the db, table and credentials and then it had to be told which was the textual address ands it would return the lat and long of the clients directly onto the desired table and field.",
   "links": [
     { "label": "Vue.js", "url": "https://vuejs.org/" },

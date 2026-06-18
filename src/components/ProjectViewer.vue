@@ -17,16 +17,16 @@
           >
             {{ project.description }}
           </p>
-          <div v-if="hasLinks" class="d-flex flex-wrap gap-2">
+          <div v-if="hasLinks" class="project-viewer__links d-flex flex-wrap gap-2">
             <a
               v-for="(link, i) in normalizedLinks"
               :key="'vl-' + i"
               :href="link.url"
-              class="btn btn-primary"
+              class="btn btn-sm btn-outline-primary"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <i class="bi bi-box-arrow-up-right me-1"></i>{{ link.label }}
+              {{ link.label }}
             </a>
           </div>
         </template>

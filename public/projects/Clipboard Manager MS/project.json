@@ -1,5 +1,6 @@
 {
   "title": "Clipboard Manager MS",
+  "subtitle": "Full stack development",
   "description": "Clipboard Manager MS - it's the same concept as the Clipboard Manager Legacy but a version I made for my job at Multisystems. It had layout configurations to see the copied texts better. It allowed parametrizartion before the copy so the text could be modified before copying. I stored commands, queries, efficient code and responses I would normally use.",
   "links": [
     { "label": "Vue.js", "url": "https://vuejs.org/" },

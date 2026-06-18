@@ -66,6 +66,17 @@
             </li>
             <li class="nav-item">
               <a
+                href="#resume"
+                class="nav-link"
+                :class="{ active: activeTab === 'resume' }"
+                @click.prevent="openResume"
+              >
+                <i class="nav-icon bi bi-file-earmark-person"></i>
+                <p>Resume</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
                 href="#certificates"
                 class="nav-link"
                 :class="{ active: activeTab === 'certificates' }"
@@ -104,6 +115,9 @@
               </p>
               <p v-else-if="activeTab === 'projects' && selectedSlug" class="text-muted small mb-0">
                 Full-size project view. Use <strong>All projects</strong> to return to the grid.
+              </p>
+              <p v-else-if="activeTab === 'resume'" class="text-muted small mb-0">
+                Professional background, experience, education, and skills.
               </p>
               <p v-else-if="activeTab === 'certificates'" class="text-muted small mb-0">
                 PDF files under <code>public/certificates/</code> are listed by the same sync script as
@@ -160,6 +174,9 @@
               </section>
             </template>
           </template>
+          <div v-else-if="activeTab === 'resume'" id="resume">
+            <ResumeView />
+          </div>
           <div v-else-if="activeTab === 'certificates'" id="certificates">
             <CertificatePortfolio />
           </div>
@@ -196,6 +213,7 @@ import ProjectPortfolio from './components/ProjectPortfolio.vue'
 import ProjectViewer from './components/ProjectViewer.vue'
 import CertificatePortfolio from './components/CertificatePortfolio.vue'
 import TechStackPortfolio from './components/TechStackPortfolio.vue'
+import ResumeView from './components/ResumeView.vue'
 import SettingsDialog from './components/SettingsDialog.vue'
 import ThemeWelcomeModal from './components/ThemeWelcomeModal.vue'
 import { THEMES } from '@/constants/themes'
@@ -215,6 +233,7 @@ export default {
     ProjectViewer,
     CertificatePortfolio,
     TechStackPortfolio,
+    ResumeView,
     SettingsDialog,
     ThemeWelcomeModal
   },
@@ -250,6 +269,9 @@ export default {
     contentTitle () {
       if (this.activeTab === 'certificates') {
         return 'Certificates'
+      }
+      if (this.activeTab === 'resume') {
+        return 'Resume'
       }
       if (this.activeTab === 'tech') {
         return 'Tech Stack'
@@ -303,6 +325,9 @@ export default {
       if (section === 'certificates') {
         return { activeTab: 'certificates', selectedSlug: null, selectedKind: 'project' }
       }
+      if (section === 'resume') {
+        return { activeTab: 'resume', selectedSlug: null, selectedKind: 'project' }
+      }
       if (section === 'tech') {
         return { activeTab: 'tech', selectedSlug: null, selectedKind: 'project' }
       }
@@ -321,6 +346,7 @@ export default {
     },
     buildHashFromState () {
       if (this.activeTab === 'certificates') return 'certificates'
+      if (this.activeTab === 'resume') return 'resume'
       if (this.activeTab === 'tech') return 'tech'
       if (this.selectedSlug) {
         const prefix = this.selectedKind === 'highlight' ? 'highlights' : 'projects'
@@ -384,6 +410,13 @@ export default {
     },
     openCertificates () {
       this.activeTab = 'certificates'
+      this.selectedSlug = null
+      this.selectedKind = 'project'
+      this.canHistoryBackToList = false
+      this.syncHistory()
+    },
+    openResume () {
+      this.activeTab = 'resume'
       this.selectedSlug = null
       this.selectedKind = 'project'
       this.canHistoryBackToList = false
