@@ -62,34 +62,45 @@
     <!-- Embedded video (YouTube / Vimeo) -->
     <div v-else-if="displayType === 'video'" class="project-media__embed rounded shadow-sm overflow-hidden">
       <div class="project-media__embed-ratio">
+        <div
+          v-if="!videoLoaded"
+          class="project-media__embed-loader"
+          role="status"
+          aria-live="polite"
+        >
+          <span class="project-media__spinner" aria-hidden="true"></span>
+          <span class="visually-hidden">Loading video…</span>
+        </div>
         <iframe
           :src="videoEmbedUrl"
           :title="videoTitle"
           class="project-media__embed-iframe"
+          :class="{ 'project-media__embed-iframe--loading': !videoLoaded }"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowfullscreen
+          @load="onVideoLoaded"
         />
       </div>
     </div>
 
-    <!-- Carousel (Bootstrap) -->
+    <!-- Carousel -->
     <div
       v-else-if="displayType === 'carousel'"
-      :id="'carousel-' + slug"
-      class="carousel slide"
-      :data-bs-ride="carouselOptions.ride"
-      :data-bs-interval="carouselOptions.interval"
+      ref="carousel"
+      :id="carouselId"
+      class="carousel slide carousel-fade"
+      @mouseenter="pauseCarouselAutoplay"
+      @mouseleave="resumeCarouselAutoplay"
     >
       <div v-if="carouselOptions.indicators" class="carousel-indicators">
         <button
           v-for="(src, i) in imageUrls"
           :key="'ci-' + i"
           type="button"
-          :data-bs-target="'#carousel-' + slug"
-          :data-bs-slide-to="i"
-          :class="{ active: i === 0 }"
-          :aria-current="i === 0 ? 'true' : undefined"
+          :class="{ active: carouselSlide === i }"
+          :aria-current="carouselSlide === i ? 'true' : undefined"
           :aria-label="'Slide ' + (i + 1)"
+          @click="goToSlide(i)"
         ></button>
       </div>
       <div class="carousel-inner rounded shadow-sm">
@@ -97,7 +108,7 @@
           v-for="(src, i) in imageUrls"
           :key="'cs-' + i"
           class="carousel-item"
-          :class="{ active: i === 0 }"
+          :class="{ active: carouselSlide === i }"
         >
           <img
             :src="src"
@@ -116,8 +127,8 @@
         <button
           class="carousel-control-prev"
           type="button"
-          :data-bs-target="'#carousel-' + slug"
-          data-bs-slide="prev"
+          aria-label="Previous slide"
+          @click="carouselPrev"
         >
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>
@@ -125,8 +136,8 @@
         <button
           class="carousel-control-next"
           type="button"
-          :data-bs-target="'#carousel-' + slug"
-          data-bs-slide="next"
+          aria-label="Next slide"
+          @click="carouselNext"
         >
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
@@ -292,7 +303,13 @@ export default {
   data () {
     return {
       lightboxOpen: false,
-      lightboxIndex: 0
+      lightboxIndex: 0,
+      videoLoaded: false,
+      carouselSlide: 0,
+      carouselTimer: null,
+      carouselAutoplayPaused: false,
+      carouselVisible: true,
+      carouselObserver: null
     }
   },
   props: {
@@ -307,13 +324,27 @@ export default {
     basePath: {
       type: String,
       default: 'projects'
+    },
+    imageLimit: {
+      type: Number,
+      default: null
     }
   },
   computed: {
     baseUrl () {
       return process.env.BASE_URL || '/'
     },
+    carouselId () {
+      const safe = String(this.slug).replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-+|-+$/g, '')
+      return `carousel-${safe || 'item'}`
+    },
     imageUrls () {
+      const urls = this.allImageUrls
+      const limit = this.imageLimit
+      if (limit == null || !Number.isFinite(limit) || limit <= 0) return urls
+      return urls.slice(0, Math.floor(limit))
+    },
+    allImageUrls () {
       const names = this.project?.media?.images
       if (!Array.isArray(names)) return []
       const base = this.baseUrl.replace(/\/?$/, '/')
@@ -382,10 +413,97 @@ export default {
       }
     }
   },
+  watch: {
+    videoEmbedUrl () {
+      this.videoLoaded = false
+    },
+    displayType () {
+      this.resetCarousel()
+    },
+    imageUrls () {
+      this.resetCarousel()
+    }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.setupCarouselVisibility()
+      this.startCarouselAutoplay()
+    })
+  },
   beforeUnmount () {
     this.teardownLightboxListeners()
+    this.teardownCarousel()
   },
   methods: {
+    resetCarousel () {
+      this.carouselSlide = 0
+      this.$nextTick(() => {
+        this.setupCarouselVisibility()
+        this.startCarouselAutoplay()
+      })
+    },
+    setupCarouselVisibility () {
+      this.teardownCarouselVisibility()
+      if (this.displayType !== 'carousel') return
+      const el = this.$refs.carousel
+      if (!el || typeof IntersectionObserver === 'undefined') return
+      this.carouselObserver = new IntersectionObserver((entries) => {
+        this.carouselVisible = entries.some((entry) => entry.isIntersecting)
+      })
+      this.carouselObserver.observe(el)
+    },
+    teardownCarouselVisibility () {
+      if (this.carouselObserver) {
+        this.carouselObserver.disconnect()
+        this.carouselObserver = null
+      }
+      this.carouselVisible = true
+    },
+    startCarouselAutoplay () {
+      this.stopCarouselAutoplay()
+      if (this.displayType !== 'carousel') return
+      const { interval, ride } = this.carouselOptions
+      if (ride !== 'carousel' || interval === 0 || this.imageUrls.length <= 1) return
+      this.carouselTimer = setInterval(() => {
+        if (!this.carouselAutoplayPaused && this.carouselVisible) {
+          this.carouselNext()
+        }
+      }, interval)
+    },
+    stopCarouselAutoplay () {
+      if (this.carouselTimer) {
+        clearInterval(this.carouselTimer)
+        this.carouselTimer = null
+      }
+    },
+    teardownCarousel () {
+      this.stopCarouselAutoplay()
+      this.teardownCarouselVisibility()
+    },
+    pauseCarouselAutoplay () {
+      this.carouselAutoplayPaused = true
+    },
+    resumeCarouselAutoplay () {
+      this.carouselAutoplayPaused = false
+    },
+    goToSlide (index) {
+      const n = this.imageUrls.length
+      if (!n) return
+      this.carouselSlide = Math.max(0, Math.min(Number(index) || 0, n - 1))
+    },
+    carouselPrev () {
+      const n = this.imageUrls.length
+      if (n <= 1) return
+      this.carouselSlide = (this.carouselSlide - 1 + n) % n
+    },
+    carouselNext () {
+      const n = this.imageUrls.length
+      if (n <= 1) return
+      this.carouselSlide = (this.carouselSlide + 1) % n
+    },
+    onVideoLoaded () {
+      this.videoLoaded = true
+    },
     openLightbox (index) {
       const n = this.imageUrls.length
       if (!n) return
@@ -459,6 +577,43 @@ export default {
   width: 100%;
   height: 100%;
   border: 0;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.project-media__embed-iframe--loading {
+  opacity: 0;
+}
+
+.project-media__embed-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.project-media__spinner {
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0.25rem solid rgba(255, 255, 255, 0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: project-media-spin 0.8s linear infinite;
+}
+
+@keyframes project-media-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-media__spinner {
+    animation-duration: 1.6s;
+  }
 }
 </style>
 

@@ -38,6 +38,7 @@ Only items with non-empty `label` and `url` are shown. Use full URLs (including 
 | Field | Purpose |
 | --- | --- |
 | `images` | **Optional override.** Omit this key to use **all images from the folder** (via generated `_images.json`). If you set `images` to a list, only those files are used. Use `images: []` to show **no** images even when files exist. |
+| `previewLimit` | **Optional.** Max images shown on the **Projects tab** card only. Omit or set `null` to show all. The full **View project** page always shows every image. |
 | `video` | **Optional embed URL** (YouTube or Vimeo watch or embed link). When set, shows an embedded player **instead of images**. Intended for highlights; works for projects too. |
 | `display` | How to show images. If omitted, the app picks a default (see below) |
 
@@ -103,9 +104,18 @@ Set a YouTube or Vimeo URL. Supported forms include `youtube.com/watch?v=…`, `
 
 When `media.video` is set, images are not shown in the card or viewer (folder images can remain on disk).
 
+##### `media.previewLimit` (card preview only)
+
+Limit how many images appear on the **Projects tab** card. Does not affect **View project**.
+
+| Field | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `previewLimit` | number or `null` | `null` (show all) | Positive integer; first N images from the effective list |
+
 ```json
 "media": {
-  "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  "display": "carousel",
+  "previewLimit": 3
 }
 ```
 

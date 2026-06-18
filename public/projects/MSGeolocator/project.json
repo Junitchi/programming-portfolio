@@ -1,7 +1,6 @@
 {
   "title": "MSGeolocator",
-  "subtitle": "AdminLTE card + Bootstrap carousel",
-  "description": "Set \"media.display\" to \"carousel\". Optional \"media.carousel\" controls autoplay interval (ms), indicators, and arrows.",
+  "description": "MS-Geolocator is a database agnositic azure location fetcher. It would ask for the db, table and credentials and then it had to be told which was the textual address ands it would return the lat and long of the clients directly onto the desired table and field.",
   "links": [
     { "label": "Bootstrap carousel", "url": "https://getbootstrap.com/docs/5.3/components/carousel/" },
     { "label": "AdminLTE", "url": "https://adminlte.io/" }

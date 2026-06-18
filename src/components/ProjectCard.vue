@@ -9,7 +9,12 @@
         <div v-if="error" class="alert alert-warning">{{ error }}</div>
         <template v-else>
           <div class="mb-3">
-            <ProjectMedia :slug="slug" :project="project" :base-path="basePath" />
+            <ProjectMedia
+              :slug="slug"
+              :project="project"
+              :base-path="basePath"
+              :image-limit="previewImageLimit"
+            />
           </div>
           <p
             v-if="project.description"
@@ -84,6 +89,12 @@ export default {
       return raw
         .filter((l) => l && typeof l.url === 'string' && l.url && typeof l.label === 'string' && l.label)
         .map((l) => ({ label: l.label, url: l.url }))
+    },
+    previewImageLimit () {
+      const v = this.project?.media?.previewLimit
+      if (v == null) return null
+      const n = Number(v)
+      return Number.isFinite(n) && n > 0 ? Math.floor(n) : null
     }
   }
 }

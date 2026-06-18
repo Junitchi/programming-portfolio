@@ -1,5 +1,6 @@
 {
-  "title": "Cliboard Manager Legacy",
+  "title": "Clipboard Manager Legacy",
+  "description": "Clipboard Manager Legacy is a platform that you paste commands, folder, old reusable code on a profile and on click it gets copied to the user's clipboard.\n\nIt has the ability to copy all copied text on a profile at the clipboard, it also allows adding a copied text to the clipboard, before the clipboard which makes what's in the clipboard be replaces with (selected text + current clipboard and after (clipboard + selected text).",
   "links": [{ "label": "Repository", "url": "https://github.com/" }],
   "media": {
     "single": {

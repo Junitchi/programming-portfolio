@@ -1,7 +1,6 @@
 {
-  "title": "Masonry layout",
-  "subtitle": "CSS columns",
-  "description": "\"display\": \"masonry\" flows images in columns. Tune \"media.masonry.columns\" and optional \"media.masonry.gap\" (any CSS length).",
+  "title": "WDCS Cloud Printer Client",
+  "description": "At the WDCS Cloud Printer Client I added indicators for the application to show wether or not the service was running since they were not sure if it was on or off and that made configuration harder.",
   "links": [],
   "media": {
     "display": "masonry",

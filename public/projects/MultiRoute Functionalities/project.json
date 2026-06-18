@@ -1,10 +1,10 @@
 {
   "title": "MultiRoute Functionalities",
-  "subtitle": "Responsive image grid",
-  "description": "Uses \"display\": \"grid\". Use \"media.grid.columns\" (1–4) for how many thumbnails appear per row on medium+ screens.",
+  "description": "Multiroute is the routiong and truck logistics software of multisystem. I added a lot of pictures with different things I created and modified.\n\nThere are some of them.\n\nI created a stepper component that notified the state if deliveries and it's stops rendering a colorful timeline. They could also see what was inside he invoice, their amount and units(cases, pounds and such).\n\nI modified our surveys capabilities to be non linear or sequential. Different responses lead to different questions.\n\nImplemented inter azure map location fetch at the Routing by Map functionality.\n\nI created access profiles so user configuration was faster.\n\nI optimized a file fetching module that used to get stuck due to the amount of files by adding a date range functionality and a backend type fetch. with both combined the page loaded way faster than before.",
   "links": [{ "label": "Vue.js", "url": "https://vuejs.org/" }],
   "media": {
     "display": "grid",
-    "grid": { "columns": 2 }
+    "grid": { "columns": 2 },
+    "previewLimit": 8
   }
 }

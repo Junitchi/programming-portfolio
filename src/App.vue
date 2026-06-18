@@ -75,6 +75,17 @@
                 <p>Certificates</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a
+                href="#tech"
+                class="nav-link"
+                :class="{ active: activeTab === 'tech' }"
+                @click.prevent="openTechStack"
+              >
+                <i class="nav-icon bi bi-code-slash"></i>
+                <p>Tech Stack</p>
+              </a>
+            </li>
           </ul>
         </nav>
       </div>
@@ -94,9 +105,12 @@
               <p v-else-if="activeTab === 'projects' && selectedSlug" class="text-muted small mb-0">
                 Full-size project view. Use <strong>All projects</strong> to return to the grid.
               </p>
-              <p v-else class="text-muted small mb-0">
+              <p v-else-if="activeTab === 'certificates'" class="text-muted small mb-0">
                 PDF files under <code>public/certificates/</code> are listed by the same sync script as
                 projects. Filename (without <code>.pdf</code>) is the card title.
+              </p>
+              <p v-else-if="activeTab === 'tech'" class="text-muted small mb-0">
+                Languages, frameworks, data tools, and related concepts grouped by category.
               </p>
             </div>
           </div>
@@ -146,8 +160,11 @@
               </section>
             </template>
           </template>
-          <div v-else id="certificates">
+          <div v-else-if="activeTab === 'certificates'" id="certificates">
             <CertificatePortfolio />
+          </div>
+          <div v-else-if="activeTab === 'tech'" id="tech">
+            <TechStackPortfolio />
           </div>
         </div>
       </div>
@@ -178,6 +195,7 @@ import { loadAllProjects, loadAllHighlights } from './services/portfolio'
 import ProjectPortfolio from './components/ProjectPortfolio.vue'
 import ProjectViewer from './components/ProjectViewer.vue'
 import CertificatePortfolio from './components/CertificatePortfolio.vue'
+import TechStackPortfolio from './components/TechStackPortfolio.vue'
 import SettingsDialog from './components/SettingsDialog.vue'
 import ThemeWelcomeModal from './components/ThemeWelcomeModal.vue'
 import { THEMES } from '@/constants/themes'
@@ -196,6 +214,7 @@ export default {
     ProjectPortfolio,
     ProjectViewer,
     CertificatePortfolio,
+    TechStackPortfolio,
     SettingsDialog,
     ThemeWelcomeModal
   },
@@ -211,6 +230,7 @@ export default {
       highlightsError: null,
       selectedSlug: null,
       selectedKind: 'project',
+      canHistoryBackToList: false,
       theme,
       accent: getThemeAccent(theme),
       themes: THEMES,
@@ -231,6 +251,9 @@ export default {
       if (this.activeTab === 'certificates') {
         return 'Certificates'
       }
+      if (this.activeTab === 'tech') {
+        return 'Tech Stack'
+      }
       if (this.selectedSlug && this.selectedEntry?.project?.title) {
         return this.selectedEntry.project.title
       }
@@ -241,6 +264,8 @@ export default {
     }
   },
   async mounted () {
+    window.addEventListener('popstate', this.onPopState)
+
     if (!hasPickedTheme()) {
       this.welcomeOpen = true
     }
@@ -260,8 +285,75 @@ export default {
     } finally {
       this.highlightsLoading = false
     }
+
+    this.applyRouteFromHash()
+    if (!window.location.hash) {
+      this.syncHistory({ replace: true })
+    }
+  },
+  beforeUnmount () {
+    window.removeEventListener('popstate', this.onPopState)
   },
   methods: {
+    parseRouteFromHash () {
+      const raw = window.location.hash.replace(/^#/, '').trim()
+      const parts = raw.split('/').filter(Boolean)
+      const section = parts[0] || 'projects'
+
+      if (section === 'certificates') {
+        return { activeTab: 'certificates', selectedSlug: null, selectedKind: 'project' }
+      }
+      if (section === 'tech') {
+        return { activeTab: 'tech', selectedSlug: null, selectedKind: 'project' }
+      }
+      if (section === 'highlights') {
+        return {
+          activeTab: 'projects',
+          selectedSlug: parts[1] ? decodeURIComponent(parts[1]) : null,
+          selectedKind: 'highlight'
+        }
+      }
+      return {
+        activeTab: 'projects',
+        selectedSlug: parts[1] ? decodeURIComponent(parts[1]) : null,
+        selectedKind: 'project'
+      }
+    },
+    buildHashFromState () {
+      if (this.activeTab === 'certificates') return 'certificates'
+      if (this.activeTab === 'tech') return 'tech'
+      if (this.selectedSlug) {
+        const prefix = this.selectedKind === 'highlight' ? 'highlights' : 'projects'
+        return `${prefix}/${encodeURIComponent(this.selectedSlug)}`
+      }
+      return 'projects'
+    },
+    syncHistory ({ replace = false } = {}) {
+      const hash = this.buildHashFromState()
+      const url = `${window.location.pathname}${window.location.search}#${hash}`
+      if (replace) {
+        history.replaceState({ appRoute: hash }, '', url)
+      } else {
+        history.pushState({ appRoute: hash }, '', url)
+      }
+    },
+    applyRouteFromHash () {
+      const route = this.parseRouteFromHash()
+      this.activeTab = route.activeTab
+      this.selectedSlug = route.selectedSlug
+      this.selectedKind = route.selectedKind
+      this.canHistoryBackToList = false
+    },
+    onPopState () {
+      this.applyRouteFromHash()
+    },
+    navigateToProjectsList ({ replace = false } = {}) {
+      this.activeTab = 'projects'
+      this.selectedSlug = null
+      this.selectedKind = 'project'
+      this.canHistoryBackToList = false
+      this.syncHistory({ replace })
+    },
     onThemeChange (themeId) {
       this.theme = applyTheme(themeId)
       this.accent = getThemeAccent(themeId)
@@ -277,31 +369,52 @@ export default {
       this.welcomeOpen = false
     },
     goHome () {
-      this.activeTab = 'projects'
-      this.selectedSlug = null
-      this.selectedKind = 'project'
+      if (this.selectedSlug && this.canHistoryBackToList) {
+        this.clearViewer()
+        return
+      }
+      this.navigateToProjectsList({ replace: false })
     },
     openProjects () {
-      this.activeTab = 'projects'
-      this.selectedSlug = null
-      this.selectedKind = 'project'
+      if (this.selectedSlug && this.canHistoryBackToList) {
+        this.clearViewer()
+        return
+      }
+      this.navigateToProjectsList({ replace: false })
     },
     openCertificates () {
       this.activeTab = 'certificates'
       this.selectedSlug = null
       this.selectedKind = 'project'
+      this.canHistoryBackToList = false
+      this.syncHistory()
     },
-    clearViewer () {
+    openTechStack () {
+      this.activeTab = 'tech'
       this.selectedSlug = null
       this.selectedKind = 'project'
+      this.canHistoryBackToList = false
+      this.syncHistory()
+    },
+    clearViewer () {
+      if (this.canHistoryBackToList) {
+        this.canHistoryBackToList = false
+        history.back()
+        return
+      }
+      this.navigateToProjectsList({ replace: true })
     },
     onViewProject (slug) {
       this.selectedKind = 'project'
       this.selectedSlug = slug
+      this.canHistoryBackToList = true
+      this.syncHistory()
     },
     onViewHighlight (slug) {
       this.selectedKind = 'highlight'
       this.selectedSlug = slug
+      this.canHistoryBackToList = true
+      this.syncHistory()
     }
   }
 }

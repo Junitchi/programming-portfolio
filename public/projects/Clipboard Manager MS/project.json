@@ -1,10 +1,10 @@
 {
   "title": "Clipboard Manager MS",
-  "subtitle": "Responsive image grid",
-  "description": "Uses \"display\": \"grid\". Use \"media.grid.columns\" (1–4) for how many thumbnails appear per row on medium+ screens.",
+  "description": "Clipboard Manager MS - it's the same but one I made for work. It had layout configurations to see the copied texts better. It allowed parametrizartion before the copy so the text could be modified before copying. I stored commands, queries, efficient code and responses I would normally use.",
   "links": [{ "label": "Vue.js", "url": "https://vuejs.org/" }],
   "media": {
     "display": "grid",
-    "grid": { "columns": 2 }
+    "grid": { "columns": 2 },
+    "previewLimit": 2
   }
 }
