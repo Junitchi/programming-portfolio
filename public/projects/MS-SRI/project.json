@@ -1,9 +1,19 @@
 {
   "title": "MS-SRI",
+  "subtitle": "Fullstack development",
   "description": "MS-SRI it's Multisystems Sistema de Recursos Internos, which aids in the logistics of running a service business. It had Models, Categories, Equipment Inventory, Clients, Manufacturers, Contracts, Users, Permissions, Receiving form and the details of the service being done by Multisystem.\n\nI made this software along my mentee, using it to train them from front end to backend development including orm, sql, linq and other ralating technologies. I architected the platfor to use partial forms that would account for create, read (view) and edit all inside the partial form. I also made the database transactions transational so either everything is stored succesfully or it fails because the other Multisystem software (WDCS and Multiroute) had issues with failing queries but it would still store the success.\n\nThis was MVC, C#, SQL, Vue and Linq.",
-  "links": [{ "label": "MDN overflow", "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/overflow" }],
+  "links": [
+    { "label": "Vue.js", "url": "https://vuejs.org/" },
+    { "label": "AdminLTE", "url": "https://adminlte.io/" },
+    { "label": "Bootstrap", "url": "https://getbootstrap.com/" },
+    { "label": "MVC", "url": "https://dotnet.microsoft.com/apps/aspnet/mvc" },
+    { "label": "C#", "url": "https://learn.microsoft.com/en-us/dotnet/csharp/" },
+    { "label": "LINQ", "url": "https://learn.microsoft.com/en-us/dotnet/csharp/linq/" },
+    { "label": "SQL", "url": "https://learn.microsoft.com/en-us/sql/" }
+  ],
   "media": {
-    "display": "filmstrip",
-    "filmstrip": { "thumbHeight": 120 }
+    "display": "grid",
+    "grid": { "columns": 2 },
+    "previewLimit": 8
   }
 }

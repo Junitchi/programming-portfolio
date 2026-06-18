@@ -1,10 +1,17 @@
 {
   "title": "Clipboard Manager MS",
-  "description": "Clipboard Manager MS - it's the same but one I made for work. It had layout configurations to see the copied texts better. It allowed parametrizartion before the copy so the text could be modified before copying. I stored commands, queries, efficient code and responses I would normally use.",
-  "links": [{ "label": "Vue.js", "url": "https://vuejs.org/" }],
+  "description": "Clipboard Manager MS - it's the same concept as the Clipboard Manager Legacy but a version I made for my job at Multisystems. It had layout configurations to see the copied texts better. It allowed parametrizartion before the copy so the text could be modified before copying. I stored commands, queries, efficient code and responses I would normally use.",
+  "links": [
+    { "label": "Vue.js", "url": "https://vuejs.org/" },
+    { "label": "AdminLTE", "url": "https://adminlte.io/" },
+    { "label": "Bootstrap", "url": "https://getbootstrap.com/" },
+    { "label": "MVC", "url": "https://dotnet.microsoft.com/apps/aspnet/mvc" },
+    { "label": "C#", "url": "https://learn.microsoft.com/en-us/dotnet/csharp/" },
+    { "label": "LINQ", "url": "https://learn.microsoft.com/en-us/dotnet/csharp/linq/" },
+    { "label": "SQL", "url": "https://learn.microsoft.com/en-us/sql/" }
+  ],
   "media": {
-    "display": "grid",
-    "grid": { "columns": 2 },
+    "display": "stack",
     "previewLimit": 2
   }
 }

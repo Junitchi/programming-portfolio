@@ -1,7 +1,15 @@
 {
   "title": "WDCS Functionalities",
   "description": "At WDCS the warehouse management I created the Inventory Adjustments History page from front end to backend including paginations and column searching and sorting, Work history page from front end to backend including paginations and column searching and sorting.\n\nI also added Inventory amount notifications (bulk or single item) the users could set up to be notified when reaching that amount.\n\nModified reports layout for better viewing.\n\nAdded users tab to the permission and the group integrants.\n\nAdded state change functionality for QA (Quality assurance) transfers.\n\nAdded new permissions and their validation on the relevant sites.\n\nCreated the upload and deletion page for velocity profiles.",
-  "links": [{ "label": "Vue.js", "url": "https://vuejs.org/" }],
+  "links": [
+    { "label": "Vue.js", "url": "https://vuejs.org/" },
+    { "label": "AdminLTE", "url": "https://adminlte.io/" },
+    { "label": "Bootstrap", "url": "https://getbootstrap.com/" },
+    { "label": "MVC", "url": "https://dotnet.microsoft.com/apps/aspnet/mvc" },
+    { "label": "C#", "url": "https://learn.microsoft.com/en-us/dotnet/csharp/" },
+    { "label": "LINQ", "url": "https://learn.microsoft.com/en-us/dotnet/csharp/linq/" },
+    { "label": "SQL", "url": "https://learn.microsoft.com/en-us/sql/" }
+  ],
   "media": {
     "display": "grid",
     "grid": { "columns": 2 },

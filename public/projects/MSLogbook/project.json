@@ -1,7 +1,15 @@
 {
   "title": "MSLogbook",
   "description": "MS Logbook was the recreation of a Logbook software Multisystem has using adminlte and card design. I configured and built everything. I configured the orm, automatic db and admin user creation if it didn't exist and would update the database by performing migrations when the software was updated since at the Multisystems software the databases had to be updated manually and clients had different versions.\n\nI made the user creation and permission systyem, paged tables, log page (the place, time, client and company the employees were logging information about their visit).",
-  "links": [],
+  "links": [
+    { "label": "Vue.js", "url": "https://vuejs.org/" },
+    { "label": "AdminLTE", "url": "https://adminlte.io/" },
+    { "label": "Bootstrap", "url": "https://getbootstrap.com/" },
+    { "label": "MVC", "url": "https://dotnet.microsoft.com/apps/aspnet/mvc" },
+    { "label": "C#", "url": "https://learn.microsoft.com/en-us/dotnet/csharp/" },
+    { "label": "LINQ", "url": "https://learn.microsoft.com/en-us/dotnet/csharp/linq/" },
+    { "label": "SQL", "url": "https://learn.microsoft.com/en-us/sql/" }
+  ],
   "media": {
     "display": "stack",
     "previewLimit": 2

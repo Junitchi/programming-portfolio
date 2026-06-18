@@ -1,14 +1,14 @@
 <template>
-  <div class="col-12 col-lg-6 col-xxl-4">
-    <div class="card card-outline card-primary h-100 shadow-sm">
+  <div class="col-12 col-lg-6 col-xxl-4 project-card-col" :data-slug="slug">
+    <div class="card card-outline card-primary h-100 shadow-sm project-card">
       <div v-if="hasHeaderContent" class="card-header">
         <h3 v-if="project.title" class="card-title mb-1">{{ project.title }}</h3>
         <p v-if="project.subtitle" class="text-muted mb-0 small">{{ project.subtitle }}</p>
       </div>
-      <div class="card-body pt-3 d-flex flex-column">
+      <div class="card-body pt-3 project-card__body">
         <div v-if="error" class="alert alert-warning">{{ error }}</div>
         <template v-else>
-          <div class="mb-3">
+          <div class="project-card__media">
             <ProjectMedia
               :slug="slug"
               :project="project"
@@ -16,25 +16,27 @@
               :image-limit="previewImageLimit"
             />
           </div>
-          <p
-            v-if="project.description"
-            class="card-text text-body-secondary project-description"
-          >
-            {{ project.description }}
-          </p>
-          <div v-if="hasLinks" class="mb-3">
-            <a
-              v-for="(link, i) in normalizedLinks"
-              :key="'l-' + i"
-              :href="link.url"
-              class="btn btn-sm btn-outline-primary me-1 mb-1"
-              target="_blank"
-              rel="noopener noreferrer"
+          <div class="project-card__details">
+            <p
+              v-if="project.description"
+              class="card-text text-body-secondary project-description mb-0"
             >
-              {{ link.label }}
-            </a>
+              {{ project.description }}
+            </p>
+            <div v-if="hasLinks" class="project-card__links">
+              <a
+                v-for="(link, i) in normalizedLinks"
+                :key="'l-' + i"
+                :href="link.url"
+                class="btn btn-sm btn-outline-primary me-1 mb-1"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ link.label }}
+              </a>
+            </div>
           </div>
-          <div class="mt-auto d-grid gap-2">
+          <div class="project-card__actions mt-auto d-grid gap-2">
             <button
               type="button"
               class="btn btn-outline-secondary btn-sm"
@@ -103,5 +105,66 @@ export default {
 <style scoped>
 .project-description {
   white-space: pre-wrap;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.project-card__media {
+  margin-bottom: 1rem;
+}
+
+.project-card__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.project-card__links:not(:empty) {
+  margin-top: 0.25rem;
+}
+</style>
+
+<style>
+/* Applied by ProjectPortfolio when cards share a row (lg+ only) */
+@media (min-width: 992px) {
+  .project-card-col--row-aligned .project-card__media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .project-card-col--row-aligned .project-card__media .project-media {
+    width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+  }
+
+  .project-card-col--row-aligned .project-card__media .carousel,
+  .project-card-col--row-aligned .project-card__media .carousel-inner,
+  .project-card-col--row-aligned .project-card__media .carousel-item,
+  .project-card-col--row-aligned .project-card__media .carousel-item.active {
+    max-height: 100%;
+  }
+
+  .project-card-col--row-aligned .project-card__media img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    object-fit: contain;
+  }
 }
 </style>
