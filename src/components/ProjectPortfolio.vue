@@ -48,54 +48,41 @@ export default {
   },
   data () {
     return {
-      rowLayoutObserver: null,
       rowLayoutTimer: null,
-      rowLayoutUpdating: false
+      rowLayoutUpdating: false,
+      lastLayoutKey: ''
     }
   },
   watch: {
     items: {
       handler () {
+        this.lastLayoutKey = ''
         this.scheduleRowLayout()
       },
       deep: true
     },
     loading (isLoading) {
       if (!isLoading) {
+        this.lastLayoutKey = ''
         this.scheduleRowLayout()
-        this.scheduleRowLayoutDelayed()
       }
     }
   },
   mounted () {
-    this.setupRowLayoutObserver()
     this.scheduleRowLayout()
-    this.scheduleRowLayoutDelayed()
-    window.addEventListener('resize', this.scheduleRowLayout)
+    window.addEventListener('resize', this.onWindowResize)
   },
   beforeUnmount () {
-    window.removeEventListener('resize', this.scheduleRowLayout)
+    window.removeEventListener('resize', this.onWindowResize)
     if (this.rowLayoutTimer) {
       clearTimeout(this.rowLayoutTimer)
       this.rowLayoutTimer = null
     }
-    if (this.rowLayoutObserver) {
-      this.rowLayoutObserver.disconnect()
-      this.rowLayoutObserver = null
-    }
   },
   methods: {
-    setupRowLayoutObserver () {
-      if (typeof ResizeObserver === 'undefined') return
-      this.rowLayoutObserver = new ResizeObserver(() => {
-        if (this.rowLayoutUpdating) return
-        this.scheduleRowLayout()
-      })
-      this.$nextTick(() => {
-        if (this.$refs.grid) {
-          this.rowLayoutObserver.observe(this.$refs.grid)
-        }
-      })
+    onWindowResize () {
+      this.lastLayoutKey = ''
+      this.scheduleRowLayout()
     },
     bindImageLoadListeners () {
       const grid = this.$refs.grid
@@ -105,9 +92,13 @@ export default {
         if (img.dataset.rowLayoutBound === '1') return
         img.dataset.rowLayoutBound = '1'
         if (img.complete) return
-        img.addEventListener('load', this.scheduleRowLayout, { once: true })
-        img.addEventListener('error', this.scheduleRowLayout, { once: true })
+        img.addEventListener('load', this.onImageLoaded, { once: true })
+        img.addEventListener('error', this.onImageLoaded, { once: true })
       })
+    },
+    onImageLoaded () {
+      this.lastLayoutKey = ''
+      this.scheduleRowLayout()
     },
     scheduleRowLayout () {
       if (this.rowLayoutTimer) {
@@ -116,12 +107,7 @@ export default {
       this.rowLayoutTimer = setTimeout(() => {
         this.rowLayoutTimer = null
         this.updateRowLayout()
-      }, 80)
-    },
-    scheduleRowLayoutDelayed () {
-      setTimeout(() => {
-        this.updateRowLayout()
-      }, 400)
+      }, 120)
     },
     clearRowLayout (cols) {
       cols.forEach((col) => {
@@ -131,12 +117,38 @@ export default {
           media.style.height = ''
           media.style.minHeight = ''
         }
+        const description = col.querySelector('.project-card__description')
+        if (description) {
+          description.style.height = ''
+          description.style.minHeight = ''
+        }
+        const links = col.querySelector('.project-card__links')
+        if (links) {
+          links.style.height = ''
+          links.style.minHeight = ''
+        }
       })
+    },
+    measureNaturalHeight (el) {
+      if (!el) return 0
+      return Math.max(el.scrollHeight, el.getBoundingClientRect().height)
     },
     measureMediaContentHeight (col) {
       const inner = col.querySelector('.project-card__media .project-media')
-      if (!inner) return 0
-      return Math.max(inner.scrollHeight, inner.getBoundingClientRect().height)
+      return this.measureNaturalHeight(inner)
+    },
+    measureDescriptionHeight (col) {
+      const text = col.querySelector('.project-card__description .project-description')
+      return this.measureNaturalHeight(text)
+    },
+    measureLinksHeight (col) {
+      const links = col.querySelector('.project-card__links')
+      if (!links) return 0
+      const savedMinHeight = links.style.minHeight
+      links.style.minHeight = ''
+      const height = this.measureNaturalHeight(links)
+      links.style.minHeight = savedMinHeight
+      return height
     },
     groupColsByRow (cols) {
       const sorted = cols
@@ -161,52 +173,103 @@ export default {
       if (current.length) groups.push(current)
       return groups
     },
-    updateRowLayout () {
-      const grid = this.$refs.grid
-      if (!grid) return
-
-      const cols = [...grid.querySelectorAll('.project-card-col')]
-      this.clearRowLayout(cols)
-
-      if (!cols.length || window.innerWidth < 992) {
-        return
-      }
-
-      this.rowLayoutUpdating = true
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          try {
-            this.applyRowLayout(cols)
-            this.bindImageLoadListeners()
-          } finally {
-            this.rowLayoutUpdating = false
-          }
-        })
-      })
-    },
-    applyRowLayout (cols) {
+    buildLayoutPlan (cols) {
       const groups = this.groupColsByRow(cols)
+      const plan = []
 
       groups.forEach((groupCols) => {
         if (groupCols.length < 2) return
 
         let maxMediaHeight = 0
+        let maxDescriptionHeight = 0
+        let maxLinksHeight = 0
+
         groupCols.forEach((col) => {
           maxMediaHeight = Math.max(maxMediaHeight, this.measureMediaContentHeight(col))
+          maxDescriptionHeight = Math.max(maxDescriptionHeight, this.measureDescriptionHeight(col))
+          maxLinksHeight = Math.max(maxLinksHeight, this.measureLinksHeight(col))
         })
 
-        if (maxMediaHeight <= 0) return
+        plan.push({
+          cols: groupCols,
+          mediaHeight: maxMediaHeight > 0 ? Math.ceil(maxMediaHeight) : 0,
+          descriptionHeight: maxDescriptionHeight > 0 ? Math.ceil(maxDescriptionHeight) : 0,
+          linksHeight: maxLinksHeight > 0 ? Math.ceil(maxLinksHeight) : 0
+        })
+      })
 
-        const heightPx = `${Math.ceil(maxMediaHeight)}px`
+      return plan
+    },
+    layoutPlanKey (plan) {
+      return plan.map((row) => (
+        `${row.cols.length}:${row.mediaHeight}:${row.descriptionHeight}:${row.linksHeight}`
+      )).join('|')
+    },
+    applyLayoutPlan (plan) {
+      plan.forEach((row) => {
+        const mediaHeightPx = row.mediaHeight ? `${row.mediaHeight}px` : null
+        const descriptionHeightPx = row.descriptionHeight ? `${row.descriptionHeight}px` : null
+        const linksHeightPx = row.linksHeight ? `${row.linksHeight}px` : null
 
-        groupCols.forEach((col) => {
+        row.cols.forEach((col) => {
           col.classList.add('project-card-col--row-aligned')
+
           const media = col.querySelector('.project-card__media')
-          if (media && media.style.height !== heightPx) {
-            media.style.height = heightPx
-            media.style.minHeight = heightPx
+          if (media && mediaHeightPx) {
+            if (media.style.height !== mediaHeightPx) {
+              media.style.height = mediaHeightPx
+              media.style.minHeight = mediaHeightPx
+            }
+          }
+
+          const description = col.querySelector('.project-card__description')
+          if (description && descriptionHeightPx) {
+            if (description.style.minHeight !== descriptionHeightPx) {
+              description.style.minHeight = descriptionHeightPx
+            }
+          }
+
+          const links = col.querySelector('.project-card__links')
+          if (links && linksHeightPx) {
+            if (links.style.minHeight !== linksHeightPx) {
+              links.style.minHeight = linksHeightPx
+            }
           }
         })
+      })
+    },
+    updateRowLayout () {
+      const grid = this.$refs.grid
+      if (!grid || this.rowLayoutUpdating) return
+
+      const cols = [...grid.querySelectorAll('.project-card-col')]
+      if (!cols.length || window.innerWidth < 992) {
+        if (this.lastLayoutKey) {
+          this.clearRowLayout(cols)
+          this.lastLayoutKey = ''
+        }
+        return
+      }
+
+      const previewPlan = this.buildLayoutPlan(cols)
+      const previewKey = this.layoutPlanKey(previewPlan)
+      this.bindImageLoadListeners()
+
+      if (previewKey === this.lastLayoutKey) {
+        return
+      }
+
+      this.rowLayoutUpdating = true
+      this.clearRowLayout(cols)
+
+      requestAnimationFrame(() => {
+        try {
+          const plan = this.buildLayoutPlan(cols)
+          this.applyLayoutPlan(plan)
+          this.lastLayoutKey = this.layoutPlanKey(plan)
+        } finally {
+          this.rowLayoutUpdating = false
+        }
       })
     },
     onView (slug) {

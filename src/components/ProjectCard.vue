@@ -17,12 +17,11 @@
             />
           </div>
           <div class="project-card__details">
-            <p
-              v-if="project.description"
-              class="card-text text-body-secondary project-description mb-0"
-            >
-              {{ project.description }}
-            </p>
+            <div v-if="project.description" class="project-card__description">
+              <p class="card-text text-body-secondary project-description mb-0">
+                {{ project.description }}
+              </p>
+            </div>
             <div v-if="hasLinks" class="project-card__links">
               <a
                 v-for="(link, i) in normalizedLinks"
@@ -128,14 +127,21 @@ export default {
   gap: 0.75rem;
 }
 
-.project-card__links:not(:empty) {
-  margin-top: 0.25rem;
+.project-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
 }
 </style>
 
 <style>
 /* Applied by ProjectPortfolio when cards share a row (lg+ only) */
 @media (min-width: 992px) {
+  .project-card-col--row-aligned .project-card__body {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
   .project-card-col--row-aligned .project-card__media {
     display: flex;
     align-items: center;
@@ -165,6 +171,27 @@ export default {
     margin-left: auto;
     margin-right: auto;
     object-fit: contain;
+  }
+
+  .project-card-col--row-aligned .project-card__details {
+    flex: 1 1 auto;
+    min-height: 0;
+    gap: 0.75rem;
+  }
+
+  .project-card-col--row-aligned .project-card__description {
+    flex-shrink: 0;
+  }
+
+  .project-card-col--row-aligned .project-card__links {
+    flex-shrink: 0;
+    align-content: flex-start;
+    align-items: flex-start;
+    padding-top: 0;
+  }
+
+  .project-card-col--row-aligned .project-card__actions {
+    flex-shrink: 0;
   }
 }
 </style>
