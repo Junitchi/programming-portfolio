@@ -24,25 +24,60 @@ function listImagesInFolder (absDir) {
     .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
 }
 
+function readExistingSlugs (indexPath, indexKey) {
+  if (!fs.existsSync(indexPath)) return []
+  try {
+    const data = JSON.parse(fs.readFileSync(indexPath, 'utf8'))
+    const slugs = data[indexKey]
+    return Array.isArray(slugs) ? slugs : []
+  } catch {
+    return []
+  }
+}
+
+/** Keep existing order; drop missing folders; append new folders at the bottom. */
+function mergeSlugOrder (existingSlugs, folderSlugs) {
+  const folderSet = new Set(folderSlugs)
+  const merged = []
+  const seen = new Set()
+
+  for (const slug of existingSlugs) {
+    if (typeof slug === 'string' && folderSet.has(slug) && !seen.has(slug)) {
+      merged.push(slug)
+      seen.add(slug)
+    }
+  }
+
+  const newSlugs = folderSlugs
+    .filter((slug) => !seen.has(slug))
+    .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
+
+  return merged.concat(newSlugs)
+}
+
 function syncContentDir (contentDir, indexKey, label) {
   if (!fs.existsSync(contentDir)) {
     fs.mkdirSync(contentDir, { recursive: true })
   }
 
-  const slugs = fs
+  const folderSlugs = fs
     .readdirSync(contentDir, { withFileTypes: true })
     .filter((d) => d.isDirectory())
     .map((d) => d.name)
     .filter((name) => !name.startsWith('.'))
-    .sort()
 
   const indexPath = path.join(contentDir, '_index.json')
+  const existingSlugs = readExistingSlugs(indexPath, indexKey)
+  const slugs = existingSlugs.length > 0
+    ? mergeSlugOrder(existingSlugs, folderSlugs)
+    : folderSlugs.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
+
   fs.writeFileSync(indexPath, JSON.stringify({ [indexKey]: slugs }, null, 2))
   console.log(
     `[sync-projects-index] Wrote ${slugs.length} ${label} folder(s) to ${path.relative(process.cwd(), indexPath)}`
   )
 
-  for (const slug of slugs) {
+  for (const slug of folderSlugs) {
     const dir = path.join(contentDir, slug)
     const images = listImagesInFolder(dir)
     const manifestPath = path.join(dir, '_images.json')
