@@ -207,15 +207,15 @@ export default {
 
 .resume-page--export {
   --resume-pad-x: 1.85rem;
-  --resume-pad-top: 1.1rem;
-  --resume-pad-bottom: 1.1rem;
-  --resume-section-gap: 0.95rem;
-  --resume-header-gap: 0.9rem;
-  --resume-block-gap: 0.95rem;
+  --resume-pad-top: 1.25rem;
+  --resume-pad-bottom: 1.25rem;
+  --resume-section-gap: 1.1rem;
+  --resume-header-gap: 1rem;
+  --resume-block-gap: 1.1rem;
   border: none;
   border-radius: 0;
   box-shadow: none;
-  line-height: 1.32;
+  line-height: 1.4;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -236,24 +236,24 @@ export default {
 }
 
 .resume-page--export .resume-page__accent-bar {
-  height: 0.38rem;
+  height: 0.5rem;
 }
 
 .resume-page--export .resume-page__name {
-  font-size: 1.3rem;
+  font-size: 1.65rem;
 }
 
 .resume-page--export .resume-page__title {
-  font-size: 0.92rem;
+  font-size: 1.1rem;
   margin-top: 0.2rem;
 }
 
 .resume-page--export .resume-page__contact {
-  font-size: 0.74rem;
+  font-size: 0.88rem;
 }
 
 .resume-page--export .resume-page__summary {
-  font-size: 0.76rem;
+  font-size: 0.9rem;
 }
 
 .resume-page--export .resume-page__body {
@@ -261,13 +261,12 @@ export default {
   min-height: 0;
   gap: 1.35rem;
   padding-top: 0.15rem;
-  align-items: stretch;
+  align-items: start;
 }
 
 .resume-page--export .resume-page__main,
 .resume-page--export .resume-page__aside {
-  justify-content: space-between;
-  height: 100%;
+  justify-content: flex-start;
 }
 
 .resume-page--export .resume-page__aside {
@@ -279,29 +278,29 @@ export default {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--resume-block-gap);
   padding-bottom: var(--resume-pad-bottom);
 }
 
 .resume-page--export .resume-section__heading {
-  font-size: 0.84rem;
-  margin-bottom: 0.55rem;
+  font-size: 1rem;
+  margin-bottom: 0.7rem;
 }
 
 .resume-page--export .resume-entry + .resume-entry {
-  margin-top: 0.65rem;
+  margin-top: 0.75rem;
 }
 
 .resume-page--export .resume-entry__primary,
 .resume-page--export .resume-entry__list,
 .resume-page--export .resume-entry__details,
 .resume-page--export .resume-skills {
-  font-size: 0.74rem;
+  font-size: 0.88rem;
 }
 
 .resume-page--export .resume-entry__period {
-  font-size: 0.68rem;
+  font-size: 0.8rem;
 }
 
 .resume-page--export .resume-entry__list {
