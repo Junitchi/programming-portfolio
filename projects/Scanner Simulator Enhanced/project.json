@@ -1,0 +1,14 @@
+{
+  "title": "Scanner Simulator Enhanced",
+  "subtitle": "Software upgrade",
+  "description": "Scanner Simulator Update: I took the old code of a supervisor and updated it to have scanner codes to test out console application.\n\nI added auto scan that would iterate over codes inserting it onto the selected console on a loop or just running all the codes once.\n\nI added import and export functionality of the batch of codes and a history of which code was scanned and the time it happened.",
+  "links": [{ "label": "C#", "url": "https://learn.microsoft.com/en-us/dotnet/csharp/" }],
+  "media": {
+    "display": "carousel",
+    "carousel": {
+      "interval": 4000,
+      "indicators": true,
+      "controls": true
+    }
+  }
+}

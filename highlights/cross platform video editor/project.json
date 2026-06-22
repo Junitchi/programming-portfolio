@@ -1,0 +1,19 @@
+{
+  "title": "Vido Editor",
+  "subtitle": "Cross platform video editor",
+  "description": "\n \nVido Editor is a fast, creator‑friendly editing tool built for modern media.  \n \nCut, remix, and craft your stories with intuitive controls and powerful features designed to keep you creating, not struggling with software. \n \nWe're building a new way for creators and audiences to connect, create, and share. \n \nIf you want to be part of the very first wave, drop your email below. When our Kickstarter campaign goes live, I'll send you the direct link so you can check it out, support it early, and help shape the future of Zorro Forge. \n \nThanks for being here at the start of something big. \n \n Want to be notified when the Kickstarter campaign goes live, join our contact form: https://forms.gle/zk389Kc9FDAxYE8i8",
+  "links": [
+    { "label": "Promotional Video", "url": "https://www.youtube.com/watch?v=UBOwRi72mAk&t" },
+    { "label": "Vue.js", "url": "https://vuejs.org/" },
+    { "label": "AdminLTE", "url": "https://adminlte.io/" },
+    { "label": "Bootstrap", "url": "https://getbootstrap.com/" },
+    { "label": "Electron", "url": "https://www.electronjs.org/" }
+  ],
+  "media": {
+    "video": "https://www.youtube.com/watch?v=UBOwRi72mAk&t",
+    "single": {
+      "maxHeight": 320,
+      "objectFit": "contain"
+    }
+  }
+}

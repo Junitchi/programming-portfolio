@@ -1,0 +1,20 @@
+{
+  "title": "WDCS Cloud Printer Client",
+  "description": "At the WDCS Cloud Printer Client I added indicators for the application to show wether or not the service was running since they were not sure if it was on or off and that made configuration harder.",
+  "links": [
+    { "label": "Vue.js", "url": "https://vuejs.org/" },
+    { "label": "AdminLTE", "url": "https://adminlte.io/" },
+    { "label": "Bootstrap", "url": "https://getbootstrap.com/" },
+    { "label": "MVC", "url": "https://dotnet.microsoft.com/apps/aspnet/mvc" },
+    { "label": "C#", "url": "https://learn.microsoft.com/en-us/dotnet/csharp/" },
+    { "label": "LINQ", "url": "https://learn.microsoft.com/en-us/dotnet/csharp/linq/" },
+    { "label": "SQL", "url": "https://learn.microsoft.com/en-us/sql/" }
+  ],
+  "media": {
+    "display": "masonry",
+    "masonry": {
+      "columns": 2,
+      "gap": "0.75rem"
+    }
+  }
+}
