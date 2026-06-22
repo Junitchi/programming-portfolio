@@ -179,9 +179,9 @@ export default {
   --resume-text-secondary: var(--vido-text-secondary, #4b5563);
   --resume-border: var(--vido-border-default, #e5e7eb);
   --resume-link: var(--vido-accent, #2563eb);
-  --resume-pad-x: clamp(2.25rem, 6vw, 3.5rem);
-  --resume-pad-top: 2rem;
-  --resume-pad-bottom: 2.25rem;
+  --resume-pad-x: clamp(2.5rem, 7vw, 4rem);
+  --resume-pad-top: 2.25rem;
+  --resume-pad-bottom: 2.5rem;
   --resume-section-gap: 1.35rem;
   --resume-header-gap: 1.5rem;
 
@@ -197,7 +197,7 @@ export default {
 }
 
 .resume-page--portrait {
-  --resume-pad-x: 3rem;
+  --resume-pad-x: 3.5rem;
   max-width: 816px;
 }
 
@@ -206,9 +206,9 @@ export default {
 }
 
 .resume-page--export {
-  --resume-pad-x: 3rem;
-  --resume-pad-top: 2rem;
-  --resume-pad-bottom: 2.25rem;
+  --resume-pad-x: 3.5rem;
+  --resume-pad-top: 2.25rem;
+  --resume-pad-bottom: 2.5rem;
   --resume-section-gap: 1.1rem;
   --resume-header-gap: 1rem;
   --resume-block-gap: 1.1rem;
@@ -600,7 +600,7 @@ html[data-theme='family'] .resume-page {
 
 @media (min-width: 768px) {
   .resume-page--landscape {
-    --resume-pad-x: clamp(2.5rem, 5vw, 3.5rem);
+    --resume-pad-x: clamp(2.75rem, 5.5vw, 4rem);
   }
 }
 
