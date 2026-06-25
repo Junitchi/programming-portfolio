@@ -3,8 +3,6 @@ const PAGE = {
   portrait: { widthIn: 8.5, heightIn: 11, widthPx: 816, heightPx: 1056 }
 }
 
-const CANVAS_SCALE = 2
-
 const COLOR_PROPS = [
   'color',
   'backgroundColor',
@@ -14,12 +12,6 @@ const COLOR_PROPS = [
   'borderBottomColor',
   'borderLeftColor'
 ]
-
-function parseRgb (color) {
-  const match = String(color).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/)
-  if (!match) return null
-  return { r: Number(match[1]), g: Number(match[2]), b: Number(match[3]) }
-}
 
 function inlineResolvedColors (root) {
   const nodes = [root, ...root.querySelectorAll('*')]
@@ -90,12 +82,12 @@ function resetExportContent (element, previous) {
 }
 
 /**
- * Render a resume DOM node to a single-page letter PDF with no margins.
+ * Render the styled on-page resume to a single-page letter PDF.
  * Theme colors come from the live document (html[data-theme], --vido-* tokens).
  */
-export async function exportResumePdf ({ element, frame, orientation, filename }) {
+export async function exportStyledResumePdf ({ element, frame, orientation, filename }) {
   if (!element || !frame) {
-    throw new Error('exportResumePdf requires element and frame')
+    throw new Error('exportStyledResumePdf requires element and frame')
   }
 
   const resolvedOrientation = orientation === 'portrait' ? 'portrait' : 'landscape'
@@ -118,26 +110,10 @@ export async function exportResumePdf ({ element, frame, orientation, filename }
   await waitForLayout()
 
   const surfaceColor = getComputedStyle(element).backgroundColor
-  const bgRgb = parseRgb(surfaceColor)
+  const backgroundColor = surfaceColor || '#ffffff'
 
   try {
-    const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
-      import('html2canvas'),
-      import('jspdf')
-    ])
-
-    const canvas = await html2canvas(frame, {
-      scale: CANVAS_SCALE,
-      useCORS: true,
-      backgroundColor: surfaceColor || null,
-      logging: false,
-      width: page.widthPx,
-      height: page.heightPx,
-      windowWidth: page.widthPx,
-      windowHeight: page.heightPx,
-      scrollX: 0,
-      scrollY: 0
-    })
+    const { jsPDF } = await import('jspdf')
 
     const pdf = new jsPDF({
       unit: 'in',
@@ -146,23 +122,40 @@ export async function exportResumePdf ({ element, frame, orientation, filename }
       compress: true
     })
 
-    if (bgRgb) {
-      pdf.setFillColor(bgRgb.r, bgRgb.g, bgRgb.b)
-      pdf.rect(0, 0, page.widthIn, page.heightIn, 'F')
-    }
+    await new Promise((resolve, reject) => {
+      const worker = pdf.html(element, {
+        callback: (doc) => {
+          try {
+            doc.save(filename)
+            resolve()
+          } catch (err) {
+            reject(err)
+          }
+        },
+        x: 0,
+        y: 0,
+        width: page.widthIn,
+        windowWidth: page.widthPx,
+        margin: [0, 0, 0, 0],
+        autoPaging: false,
+        backgroundColor,
+        html2canvas: {
+          useCORS: true,
+          backgroundColor,
+          logging: false,
+          width: page.widthPx,
+          height: page.heightPx,
+          windowWidth: page.widthPx,
+          windowHeight: page.heightPx,
+          scrollX: 0,
+          scrollY: 0
+        }
+      })
 
-    pdf.addImage(
-      canvas.toDataURL('image/jpeg', 0.98),
-      'JPEG',
-      0,
-      0,
-      page.widthIn,
-      page.heightIn,
-      undefined,
-      'FAST'
-    )
-
-    pdf.save(filename)
+      if (worker?.catch) {
+        worker.catch(reject)
+      }
+    })
   } finally {
     resetExportContent(element, previous)
     clearInlineColors(element)

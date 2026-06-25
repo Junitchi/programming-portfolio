@@ -132,12 +132,12 @@
               </p>
               <p v-else-if="activeTab === 'resume'" class="text-muted small mb-0">
                 Professional background, experience, education, and skills. Use the gear icon to change the
-                theme and accent color—the resume updates with your choices, so you can preview different
-                styles before downloading a PDF.
+                theme and accent color—the on-page preview and PDF downloads update with your choices.
               </p>
               <p v-else-if="activeTab === 'certificates'" class="text-muted small mb-0">
-                PDF files under <code>public/certificates/</code> are listed by the same sync script as
-                projects. Filename (without <code>.pdf</code>) is the card title.
+                Professional certifications and completed training programs in RFID, industrial scanning,
+                warehouse systems, and related technologies. Each card shows an embedded preview—open the
+                PDF in a new tab to view or download the full certificate.
               </p>
               <p v-else-if="activeTab === 'tech'" class="text-muted small mb-0">
                 Languages, frameworks, data tools, and related concepts grouped by category.

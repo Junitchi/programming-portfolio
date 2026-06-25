@@ -5,7 +5,7 @@
         type="button"
         class="btn btn-outline-primary"
         :disabled="exporting"
-        @click="downloadPdf('landscape')"
+        @click="downloadStyledPdf('landscape')"
       >
         <span
           v-if="exporting && exportLayout === 'landscape'"
@@ -20,7 +20,7 @@
         type="button"
         class="btn btn-outline-secondary"
         :disabled="exporting"
-        @click="downloadPdf('portrait')"
+        @click="downloadStyledPdf('portrait')"
       >
         <span
           v-if="exporting && exportLayout === 'portrait'"
@@ -48,7 +48,7 @@
 
 <script>
 import ResumeDocument from './ResumeDocument.vue'
-import { exportResumePdf, resumePdfFilename } from '@/utils/exportResumePdf'
+import { exportStyledResumePdf, resumePdfFilename } from '@/utils/exportResumePdf'
 
 export default {
   name: 'ResumeView',
@@ -62,7 +62,7 @@ export default {
     }
   },
   methods: {
-    async downloadPdf (orientation) {
+    async downloadStyledPdf (orientation) {
       if (this.exporting) return
 
       this.exporting = true
@@ -77,7 +77,7 @@ export default {
         if (!frame || !element) {
           throw new Error('Resume export element not found')
         }
-        await exportResumePdf({
+        await exportStyledResumePdf({
           element,
           frame,
           orientation,

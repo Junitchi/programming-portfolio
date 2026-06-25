@@ -15,12 +15,11 @@ export const RESUME = {
       role: 'Software Developer',
       period: 'Mar 2024 – Mar 2026',
       bullets: [
-        'Mentored entry-level employees, offering coaching and constructive feedback to build skills and confidence. ',
         'Engineering Internal Service Management SAAS platform, developing add-on platform RoutePlanner Inventory Picking management',
+        'Identifying and resolving issues in undocumented legacy code while introducing new features and enhancements to the company\'s software suite.',
+        'Mentored entry-level employees, offering coaching and constructive feedback to build skills and confidence. ',
         'Developing responsive web platforms to enhance business logistics and analytics.',
-        'Maintaining and updating detailed software documentation. ',
-        'Identifying and resolving issues in legacy code with no previous documentation. ',
-        'Introducing new features and improvements to the company\'s software suite.'
+        'Maintaining and updating detailed software documentation. '
       ]
     },
     {
