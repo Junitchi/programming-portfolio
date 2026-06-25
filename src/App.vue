@@ -2,20 +2,24 @@
   <div class="app-wrapper">
     <nav class="app-header navbar navbar-expand border-bottom">
       <div class="container-fluid">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav align-items-center">
           <li class="nav-item">
-            <a
-              class="nav-link"
-              data-lte-toggle="sidebar"
-              href="#"
-              role="button"
-              aria-label="Toggle sidebar"
+            <button
+              type="button"
+              class="nav-link btn btn-link border-0 sidebar-toggle"
+              :aria-label="sidebarOpen ? 'Close navigation menu' : 'Open navigation menu'"
+              :aria-expanded="sidebarOpen"
+              @click="toggleSidebar"
             >
               <i class="bi bi-list fs-4"></i>
-            </a>
+              <span class="sidebar-toggle__label d-lg-none">Menu</span>
+            </button>
           </li>
           <li class="nav-item d-none d-md-flex align-items-center">
             <span class="nav-link mb-0 fw-semibold">Programming portfolio</span>
+          </li>
+          <li class="nav-item d-md-none">
+            <span class="nav-link mb-0 fw-semibold mobile-header-title">{{ contentTitle }}</span>
           </li>
         </ul>
         <ul class="navbar-nav ms-auto">
@@ -34,9 +38,16 @@
       </div>
     </nav>
 
+    <div
+      v-if="sidebarOpen && isMobileLayout"
+      class="sidebar-overlay"
+      aria-hidden="true"
+      @click="closeSidebar"
+    ></div>
+
     <aside class="app-sidebar shadow">
       <div class="sidebar-brand">
-        <a href="#main" class="brand-link" @click.prevent="goHome">
+        <a href="#main" class="brand-link" @click.prevent="onSidebarNav(goHome)">
           <span class="brand-text fw-light">Home</span>
         </a>
       </div>
@@ -52,7 +63,7 @@
                 href="#projects"
                 class="nav-link"
                 :class="{ active: activeTab === 'projects' && !selectedSlug }"
-                @click.prevent="openProjects"
+                @click.prevent="onSidebarNav(openProjects)"
               >
                 <i class="nav-icon bi bi-collection"></i>
                 <p>Projects</p>
@@ -69,7 +80,7 @@
                 href="#resume"
                 class="nav-link"
                 :class="{ active: activeTab === 'resume' }"
-                @click.prevent="openResume"
+                @click.prevent="onSidebarNav(openResume)"
               >
                 <i class="nav-icon bi bi-file-earmark-person"></i>
                 <p>Resume</p>
@@ -80,7 +91,7 @@
                 href="#certificates"
                 class="nav-link"
                 :class="{ active: activeTab === 'certificates' }"
-                @click.prevent="openCertificates"
+                @click.prevent="onSidebarNav(openCertificates)"
               >
                 <i class="nav-icon bi bi-award"></i>
                 <p>Certificates</p>
@@ -91,7 +102,7 @@
                 href="#tech"
                 class="nav-link"
                 :class="{ active: activeTab === 'tech' }"
-                @click.prevent="openTechStack"
+                @click.prevent="onSidebarNav(openTechStack)"
               >
                 <i class="nav-icon bi bi-code-slash"></i>
                 <p>Tech Stack</p>
@@ -109,15 +120,20 @@
             <div class="col">
               <h3 class="mb-0">{{ contentTitle }}</h3>
               <p v-if="activeTab === 'projects' && !selectedSlug" class="text-muted small mb-0">
-                Highlights and projects are loaded from folders under
-                <code>public/highlights/</code> and <code>public/projects/</code>. See
-                <code>public/projects/CONFIGURATION.md</code> for the JSON schema.
+                Highlights feature my cross-platform side projects—Vido Editor, a creator-focused video editor,
+                and Medio Streamspace, a personal LAN media server—with promo videos and tech stacks.
+                Projects showcase professional work at Multisystems: logistics and warehouse platforms
+                (MultiRoute, WDCS, MS-SRI), internal business tools (MS Logbook, MS Geolocator), and
+                developer utilities I built (clipboard managers, SQL test-data generator, scanner simulator).
+                Open any card for screenshots, descriptions, and links.
               </p>
               <p v-else-if="activeTab === 'projects' && selectedSlug" class="text-muted small mb-0">
                 Full-size project view. Use <strong>All projects</strong> to return to the grid.
               </p>
               <p v-else-if="activeTab === 'resume'" class="text-muted small mb-0">
-                Professional background, experience, education, and skills.
+                Professional background, experience, education, and skills. Use the gear icon to change the
+                theme and accent color—the resume updates with your choices, so you can preview different
+                styles before downloading a PDF.
               </p>
               <p v-else-if="activeTab === 'certificates'" class="text-muted small mb-0">
                 PDF files under <code>public/certificates/</code> are listed by the same sync script as
@@ -204,6 +220,21 @@
       @update:theme="onThemeChange"
       @update:accent="onAccentChange"
     />
+
+    <nav class="mobile-bottom-nav d-lg-none" aria-label="Primary navigation">
+      <button
+        v-for="item in mobileNavItems"
+        :key="item.id"
+        type="button"
+        class="mobile-bottom-nav__item"
+        :class="{ active: mobileNavActiveId === item.id }"
+        :aria-current="mobileNavActiveId === item.id ? 'page' : undefined"
+        @click="onMobileNav(item.id)"
+      >
+        <i :class="item.icon" aria-hidden="true"></i>
+        <span>{{ item.label }}</span>
+      </button>
+    </nav>
   </div>
 </template>
 
@@ -225,6 +256,8 @@ import {
   hasPickedTheme,
   markThemePicked
 } from '@/utils/applyTheme'
+
+const SIDEBAR_BREAKPOINT = 992
 
 export default {
   name: 'App',
@@ -254,10 +287,23 @@ export default {
       accent: getThemeAccent(theme),
       themes: THEMES,
       settingsOpen: false,
-      welcomeOpen: false
+      welcomeOpen: false,
+      sidebarOpen: false,
+      isMobileLayout: false
     }
   },
   computed: {
+    mobileNavItems () {
+      return [
+        { id: 'projects', label: 'Projects', icon: 'bi bi-collection' },
+        { id: 'resume', label: 'Resume', icon: 'bi bi-file-earmark-person' },
+        { id: 'certificates', label: 'Certs', icon: 'bi bi-award' },
+        { id: 'tech', label: 'Tech', icon: 'bi bi-code-slash' }
+      ]
+    },
+    mobileNavActiveId () {
+      return this.activeTab
+    },
     selectedEntry () {
       if (!this.selectedSlug) return null
       const list = this.selectedKind === 'highlight' ? this.highlights : this.items
@@ -287,6 +333,8 @@ export default {
   },
   async mounted () {
     window.addEventListener('popstate', this.onPopState)
+    window.addEventListener('resize', this.syncLayoutMode)
+    this.syncLayoutMode()
 
     if (!hasPickedTheme()) {
       this.welcomeOpen = true
@@ -315,8 +363,56 @@ export default {
   },
   beforeUnmount () {
     window.removeEventListener('popstate', this.onPopState)
+    window.removeEventListener('resize', this.syncLayoutMode)
   },
   methods: {
+    syncLayoutMode () {
+      const mobile = window.innerWidth < SIDEBAR_BREAKPOINT
+      this.isMobileLayout = mobile
+      if (mobile) {
+        if (!this.sidebarOpen) {
+          this.applySidebarState(false)
+        } else {
+          this.applySidebarState(true)
+        }
+      } else {
+        this.sidebarOpen = false
+        document.body.classList.remove('sidebar-open')
+      }
+    },
+    applySidebarState (open) {
+      document.body.classList.toggle('sidebar-open', open)
+      document.body.classList.toggle('sidebar-collapse', !open)
+    },
+    toggleSidebar () {
+      if (this.isMobileLayout) {
+        this.sidebarOpen = !this.sidebarOpen
+        this.applySidebarState(this.sidebarOpen)
+        return
+      }
+      document.body.classList.toggle('sidebar-collapse')
+    },
+    closeSidebar () {
+      if (!this.sidebarOpen) return
+      this.sidebarOpen = false
+      this.applySidebarState(false)
+    },
+    onSidebarNav (handler) {
+      handler.call(this)
+      this.closeSidebar()
+    },
+    onMobileNav (tabId) {
+      if (tabId === 'projects') {
+        this.openProjects()
+      } else if (tabId === 'resume') {
+        this.openResume()
+      } else if (tabId === 'certificates') {
+        this.openCertificates()
+      } else if (tabId === 'tech') {
+        this.openTechStack()
+      }
+      this.closeSidebar()
+    },
     parseRouteFromHash () {
       const raw = window.location.hash.replace(/^#/, '').trim()
       const parts = raw.split('/').filter(Boolean)
@@ -452,3 +548,116 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.sidebar-toggle:hover,
+.sidebar-toggle:focus-visible {
+  color: var(--vido-accent);
+  background-color: var(--vido-accent-tint);
+}
+
+.sidebar-toggle__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.mobile-header-title {
+  max-width: 52vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 0;
+}
+
+.mobile-bottom-nav {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.15rem;
+  padding: 0.35rem 0.5rem calc(0.35rem + env(safe-area-inset-bottom, 0px));
+  background-color: var(--vido-bg-panel, #fff);
+  border-top: 1px solid var(--vido-border-muted, rgba(0, 0, 0, 0.08));
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.mobile-bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-height: 3.25rem;
+  padding: 0.35rem 0.25rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: transparent;
+  color: var(--vido-text-secondary, #6c757d);
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.1;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.mobile-bottom-nav__item i {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.mobile-bottom-nav__item.active {
+  color: var(--vido-accent, #0d6efd);
+  background-color: var(--vido-accent-tint, rgba(13, 110, 253, 0.12));
+}
+
+.mobile-bottom-nav__item:focus-visible {
+  outline: 2px solid var(--vido-accent, #0d6efd);
+  outline-offset: 2px;
+}
+
+@media (max-width: 991.98px) {
+  :deep(.app-main) {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+</style>
+
+<style>
+@media (max-width: 991.98px) {
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1037;
+    background-color: rgba(0, 0, 0, 0.35);
+    animation: mobile-sidebar-fade-in 0.2s ease;
+  }
+
+  body.sidebar-open .app-sidebar {
+    z-index: 1038;
+  }
+}
+
+@keyframes mobile-sidebar-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+</style>

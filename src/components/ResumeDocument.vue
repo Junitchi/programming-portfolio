@@ -23,6 +23,15 @@
         <span class="resume-page__contact-sep" aria-hidden="true">|</span>
         <a v-if="!forExport" :href="`mailto:${resume.contact.email}`" class="resume-page__link">{{ resume.contact.email }}</a>
         <span v-else class="resume-page__link-text">{{ resume.contact.email }}</span>
+        <span class="resume-page__contact-sep" aria-hidden="true">|</span>
+        <a
+          v-if="!forExport"
+          :href="resume.contact.website"
+          class="resume-page__link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >{{ resume.contact.website }}</a>
+        <span v-else class="resume-page__link-text">{{ resume.contact.website }}</span>
       </p>
     </header>
 
@@ -37,12 +46,11 @@
               :key="'exp-' + i"
               class="resume-entry"
             >
-              <div class="resume-entry__head">
-                <p class="resume-entry__primary mb-0">
-                  <span class="resume-entry__org">{{ job.company }}</span>
-                  <span class="resume-entry__sep"> – </span>
-                  <span class="resume-entry__role">{{ job.role }}</span>
-                </p>
+              <div class="resume-entry__head resume-entry__head--stacked">
+                <div class="resume-entry__primary">
+                  <p class="resume-entry__org mb-0">{{ job.company }}</p>
+                  <p class="resume-entry__role mb-0">{{ job.role }}</p>
+                </div>
                 <p class="resume-entry__period mb-0">{{ job.period }}</p>
               </div>
               <ul class="resume-entry__list">
@@ -60,12 +68,11 @@
               :key="'edu-' + i"
               class="resume-entry"
             >
-              <div class="resume-entry__head">
-                <p class="resume-entry__primary mb-0">
-                  <span class="resume-entry__org">{{ edu.institution }}</span>
-                  <span class="resume-entry__sep"> – </span>
-                  <span class="resume-entry__role">{{ edu.credential }}</span>
-                </p>
+              <div class="resume-entry__head resume-entry__head--stacked">
+                <div class="resume-entry__primary">
+                  <p class="resume-entry__org mb-0">{{ edu.institution }}</p>
+                  <p class="resume-entry__role mb-0">{{ edu.credential }}</p>
+                </div>
                 <p class="resume-entry__period mb-0">{{ edu.period }}</p>
               </div>
               <p class="resume-entry__details mb-0">{{ edu.details }}</p>
@@ -507,6 +514,31 @@ html[data-theme='family'] .resume-page {
   margin-bottom: 0.35rem;
 }
 
+.resume-entry__head--stacked {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+
+.resume-entry__head--stacked .resume-entry__primary {
+  flex: 1;
+  min-width: 0;
+}
+
+.resume-entry__head--stacked .resume-entry__org,
+.resume-entry__head--stacked .resume-entry__role {
+  display: block;
+}
+
+.resume-entry__head--stacked .resume-entry__role {
+  margin-top: 0.08rem;
+}
+
+.resume-entry__head--stacked .resume-entry__period {
+  flex-shrink: 0;
+  margin-left: 1rem;
+  text-align: right;
+}
+
 .resume-entry__primary {
   font-size: 0.95rem;
   color: var(--resume-text);
@@ -570,6 +602,50 @@ html[data-theme='family'] .resume-page {
   font-weight: 700;
 }
 
+@media (max-width: 767px) {
+  .resume-page--landscape,
+  .resume-page--portrait {
+    --resume-pad-x: 1.15rem;
+  }
+
+  .resume-entry__head--stacked {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .resume-entry__head--stacked .resume-entry__period {
+    margin-left: 0;
+    text-align: left;
+    white-space: normal;
+  }
+
+  .resume-entry__head:not(.resume-entry__head--stacked) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .resume-entry__head:not(.resume-entry__head--stacked) .resume-entry__primary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1rem;
+  }
+
+  .resume-entry__head:not(.resume-entry__head--stacked) .resume-entry__sep {
+    display: none;
+  }
+
+  .resume-entry__head:not(.resume-entry__head--stacked) .resume-entry__org,
+  .resume-entry__head:not(.resume-entry__head--stacked) .resume-entry__role {
+    display: block;
+  }
+
+  .resume-skills--portrait {
+    columns: 1;
+  }
+}
+
 @media (max-width: 519px) {
   .resume-page--landscape .resume-page__header {
     flex-direction: column;
@@ -590,11 +666,6 @@ html[data-theme='family'] .resume-page {
   .resume-page--landscape .resume-page__aside {
     border-left: none;
     padding-left: 0;
-  }
-
-  .resume-entry__head {
-    flex-direction: column;
-    align-items: flex-start;
   }
 }
 

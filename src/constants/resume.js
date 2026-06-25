@@ -4,19 +4,22 @@ export const RESUME = {
   contact: {
     location: 'San Juan, Puerto Rico',
     phone: '+1 (904) 595-5303',
-    email: 'jonathan.roman@upr.edu'
+    email: 'jonathan.roman@upr.edu',
+    website: 'https://junitchi.github.io/programming-portfolio/'
   },
   summary:
-    'Passionate Software Developer skilled in cross-platform systems, app development, and database management. Proficient in SDLC, dedicated to writing clean, efficient code. Open to remote and hybrid roles in Puerto Rico.',
+    'Passionate Software Developer skilled in cross-platform systems, app development, and database management. Proficient in SDLC, dedicated to writing clean, efficient code. Open to remote and hybrid roles.',
   experience: [
     {
       company: 'Multisystems Inc, San Juan P.R.',
       role: 'Software Developer',
       period: 'Mar 2024 – Mar 2026',
       bullets: [
-        'Engineering versatile and responsive web platforms to enhance business logistics and analytics.',
-        'Maintaining and updating detailed software documentation.',
-        'Identifying and resolving issues in legacy code with no previous documentation.',
+        'Mentored entry-level employees, offering coaching and constructive feedback to build skills and confidence. ',
+        'Engineering Internal Service Management SAAS platform, developing add-on platform RoutePlanner Inventory Picking management',
+        'Developing responsive web platforms to enhance business logistics and analytics.',
+        'Maintaining and updating detailed software documentation. ',
+        'Identifying and resolving issues in legacy code with no previous documentation. ',
         'Introducing new features and improvements to the company\'s software suite.'
       ]
     },

@@ -14,14 +14,12 @@
       <div class="settings-content">
         <div class="form-row">
           <label class="form-label">Theme</label>
-          <select
-            class="form-control"
-            :value="theme"
-            @change="$emit('update:theme', $event.target.value)"
-          >
-            <option v-for="t in themes" :key="t.id" :value="t.id">{{ t.label }}</option>
-          </select>
-          <p class="form-hint">Switches the global color palette.</p>
+          <ThemePicker
+            :themes="themes"
+            :theme="theme"
+            @update:theme="$emit('update:theme', $event)"
+          />
+          <p class="form-hint">Pick a color palette for the portfolio.</p>
         </div>
         <div class="form-row">
           <label class="form-label">Accent override</label>
@@ -43,8 +41,13 @@
 </template>
 
 <script>
+import ThemePicker from './ThemePicker.vue'
+
 export default {
   name: 'SettingsDialog',
+  components: {
+    ThemePicker
+  },
   props: {
     theme: { type: String, default: 'default' },
     accent: { type: String, default: '#58a6ff' },
@@ -80,9 +83,9 @@ export default {
 .settings-dialog.vido-card {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  width: 420px;
+  width: 520px;
   max-width: 100%;
-  max-height: 80vh;
+  max-height: 85vh;
 }
 
 .close-btn {
