@@ -45,29 +45,106 @@ function waitForLayout () {
 
 function prepareExportContent (element, page) {
   element.style.boxSizing = 'border-box'
-  element.style.width = '100%'
-  element.style.maxWidth = '100%'
+  element.style.width = `${page.widthPx}px`
+  element.style.maxWidth = `${page.widthPx}px`
   element.style.height = `${page.heightPx}px`
   element.style.minHeight = `${page.heightPx}px`
   element.style.maxHeight = `${page.heightPx}px`
   element.style.transform = 'none'
   element.style.transformOrigin = 'top left'
+  element.style.overflow = 'visible'
 }
 
+/**
+ * html2canvas drops regular spaces at some line-wrap boundaries.
+ * Split text into word spans with explicit gap spans so lines wrap normally.
+ */
+function hardenCloneText (root, pageWidthPx) {
+  root.style.transform = 'none'
+  root.style.fontFamily = "'Segoe UI', Arial, Helvetica, sans-serif"
+  root.style.boxSizing = 'border-box'
+  root.style.width = `${pageWidthPx}px`
+  root.style.maxWidth = `${pageWidthPx}px`
+  root.style.overflow = 'visible'
+
+  root.querySelectorAll('*').forEach((el) => {
+    el.style.letterSpacing = 'normal'
+    el.style.overflow = 'visible'
+  })
+
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode (node) {
+        if (!node.textContent || !/\S/.test(node.textContent)) {
+          return NodeFilter.FILTER_REJECT
+        }
+        const parent = node.parentElement
+        if (!parent || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') {
+          return NodeFilter.FILTER_REJECT
+        }
+        return NodeFilter.FILTER_ACCEPT
+      }
+    }
+  )
+
+  const textNodes = []
+  while (walker.nextNode()) {
+    textNodes.push(walker.currentNode)
+  }
+
+  textNodes.forEach((node) => {
+    const words = node.textContent.trim().split(/\s+/).filter(Boolean)
+    if (words.length <= 1) return
+
+    const fragment = document.createDocumentFragment()
+    words.forEach((word, index) => {
+      const span = document.createElement('span')
+      span.textContent = word
+      span.style.display = 'inline'
+      fragment.appendChild(span)
+
+      if (index < words.length - 1) {
+        const gap = document.createElement('span')
+        gap.style.display = 'inline-block'
+        gap.style.width = '0.28em'
+        gap.style.height = '0'
+        gap.style.verticalAlign = 'baseline'
+        gap.setAttribute('aria-hidden', 'true')
+        fragment.appendChild(gap)
+      }
+    })
+
+    node.parentNode.replaceChild(fragment, node)
+  })
+}
+
+/**
+ * Fit overflowing export content by scaling root rem units.
+ */
 async function shrinkIfOverflow (element, page) {
   await waitForLayout()
 
-  if (element.scrollHeight <= page.heightPx) return
+  const html = document.documentElement
+  const previousRootFontSize = html.style.fontSize
+  const baseFontSize = parseFloat(getComputedStyle(html).fontSize) || 16
 
-  const contentHeight = element.scrollHeight
-  const scale = page.heightPx / contentHeight
+  if (element.scrollHeight > page.heightPx) {
+    let scale = 1
+    const minScale = 0.72
+    const step = 0.015
 
-  element.style.height = `${contentHeight}px`
-  element.style.minHeight = `${contentHeight}px`
-  element.style.maxHeight = 'none'
-  element.style.width = `${page.widthPx / scale}px`
-  element.style.transform = `scale(${scale})`
-  element.style.transformOrigin = 'top left'
+    while (element.scrollHeight > page.heightPx && scale > minScale) {
+      scale -= step
+      html.style.fontSize = `${baseFontSize * scale}px`
+      await waitForLayout()
+    }
+  }
+
+  return () => {
+    html.style.fontSize = previousRootFontSize
+  }
 }
 
 function resetExportContent (element, previous) {
@@ -79,6 +156,7 @@ function resetExportContent (element, previous) {
   element.style.maxHeight = previous.maxHeight
   element.style.transform = previous.transform
   element.style.transformOrigin = previous.transformOrigin
+  element.style.overflow = previous.overflow
 }
 
 /**
@@ -101,19 +179,37 @@ export async function exportStyledResumePdf ({ element, frame, orientation, file
     minHeight: element.style.minHeight,
     maxHeight: element.style.maxHeight,
     transform: element.style.transform,
-    transformOrigin: element.style.transformOrigin
+    transformOrigin: element.style.transformOrigin,
+    overflow: element.style.overflow
   }
 
   prepareExportContent(element, page)
   inlineResolvedColors(element)
-  await shrinkIfOverflow(element, page)
+  const resetRootFontSize = await shrinkIfOverflow(element, page)
   await waitForLayout()
 
   const surfaceColor = getComputedStyle(element).backgroundColor
   const backgroundColor = surfaceColor || '#ffffff'
 
   try {
-    const { jsPDF } = await import('jspdf')
+    const [{ jsPDF }, html2canvas] = await Promise.all([
+      import('jspdf'),
+      import('html2canvas').then((mod) => mod.default)
+    ])
+
+    const canvas = await html2canvas(element, {
+      useCORS: true,
+      backgroundColor,
+      logging: false,
+      scale: 2,
+      windowWidth: page.widthPx,
+      windowHeight: page.heightPx,
+      scrollX: 0,
+      scrollY: 0,
+      onclone: (_doc, clone) => {
+        hardenCloneText(clone, page.widthPx)
+      }
+    })
 
     const pdf = new jsPDF({
       unit: 'in',
@@ -122,43 +218,13 @@ export async function exportStyledResumePdf ({ element, frame, orientation, file
       compress: true
     })
 
-    await new Promise((resolve, reject) => {
-      const worker = pdf.html(element, {
-        callback: (doc) => {
-          try {
-            doc.save(filename)
-            resolve()
-          } catch (err) {
-            reject(err)
-          }
-        },
-        x: 0,
-        y: 0,
-        width: page.widthIn,
-        windowWidth: page.widthPx,
-        margin: [0, 0, 0, 0],
-        autoPaging: false,
-        backgroundColor,
-        html2canvas: {
-          useCORS: true,
-          backgroundColor,
-          logging: false,
-          width: page.widthPx,
-          height: page.heightPx,
-          windowWidth: page.widthPx,
-          windowHeight: page.heightPx,
-          scrollX: 0,
-          scrollY: 0
-        }
-      })
-
-      if (worker?.catch) {
-        worker.catch(reject)
-      }
-    })
+    const imgData = canvas.toDataURL('image/png')
+    pdf.addImage(imgData, 'PNG', 0, 0, page.widthIn, page.heightIn, undefined, 'FAST')
+    pdf.save(filename)
   } finally {
     resetExportContent(element, previous)
     clearInlineColors(element)
+    resetRootFontSize?.()
   }
 }
 

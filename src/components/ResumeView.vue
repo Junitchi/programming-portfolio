@@ -111,8 +111,9 @@ export default {
 
 .resume-pdf-export {
   position: fixed;
-  left: -12000px;
+  left: 0;
   top: 0;
+  opacity: 0;
   pointer-events: none;
   z-index: -1;
 }

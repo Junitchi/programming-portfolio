@@ -3,7 +3,7 @@ export const RESUME = {
   title: 'Software Developer',
   contact: {
     location: 'San Juan, Puerto Rico',
-    phone: '+1 (904) 595-5303',
+    phone: '+1 (904) 597-5303',
     email: 'jonathan.roman@upr.edu',
     website: 'https://junitchi.github.io/programming-portfolio/'
   },

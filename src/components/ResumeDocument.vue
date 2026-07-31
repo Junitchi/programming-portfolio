@@ -230,6 +230,7 @@ export default {
   height: 100%;
   min-height: 100%;
   max-height: 100%;
+  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
 }
 
 .resume-page--landscape.resume-page--export {
@@ -299,11 +300,13 @@ export default {
   margin-top: 0.75rem;
 }
 
+.resume-page--export .resume-page__summary,
 .resume-page--export .resume-entry__primary,
 .resume-page--export .resume-entry__list,
 .resume-page--export .resume-entry__details,
 .resume-page--export .resume-skills {
   font-size: 0.88rem;
+  word-spacing: 0.04em;
 }
 
 .resume-page--export .resume-entry__period {
