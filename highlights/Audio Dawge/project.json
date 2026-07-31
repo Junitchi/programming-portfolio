@@ -1,0 +1,17 @@
+{
+  "title": "Audio Dawg",
+  "subtitle": "Music production DAW",
+  "description": "\n\nAudio Dawg is your space for writing, recording, and shaping music. A dedicated DAW where your ideas move from sketch to finished track without getting in your way.\n\nWe're building a new way for producers and creators to compose, arrange, and mix. If you want to be part of the very first wave, drop your email below.\n\nWhen early access opens, I'll send you the link so you can try it first, give feedback, and help shape the future of Zorro Forge.\n\nThanks for being here at the start of something big.",
+  "links": [
+    { "label": "Vue.js", "url": "https://vuejs.org/" },
+    { "label": "AdminLTE", "url": "https://adminlte.io/" },
+    { "label": "Bootstrap", "url": "https://getbootstrap.com/" },
+    { "label": "Electron", "url": "https://www.electronjs.org/" }
+  ],
+  "media": {
+    "single": {
+      "maxHeight": 320,
+      "objectFit": "contain"
+    }
+  }
+}

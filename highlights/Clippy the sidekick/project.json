@@ -1,0 +1,17 @@
+{
+  "title": "Clippy the Sidekick",
+  "subtitle": "Cross-platform clipboard companion",
+  "description": "\n\nClippy the Sidekick is your desktop companion for clipboard history, snippets, and paste workflows. A dedicated space where the text you reuse lives, stays organized, and shows up the moment you need it.\n\nWe're building a smarter way to capture, search, and reuse what you copy every day — across Windows, macOS, and Linux. If you want to be part of the very first wave, drop your email below.\n\nWhen the first release goes live, I'll send you the direct link so you can download it early, try it out, and help shape what Clippy becomes next.\n\nThanks for being here at the start of something big.",
+  "links": [
+    { "label": "Vue.js", "url": "https://vuejs.org/" },
+    { "label": "AdminLTE", "url": "https://adminlte.io/" },
+    { "label": "Bootstrap", "url": "https://getbootstrap.com/" },
+    { "label": "Electron", "url": "https://www.electronjs.org/" }
+  ],
+  "media": {
+    "single": {
+      "maxHeight": 320,
+      "objectFit": "contain"
+    }
+  }
+}
