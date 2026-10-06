@@ -1,0 +1,18 @@
+{
+  "title": "Zorro Forge Store",
+  "subtitle": "Storefront for the Zorro Forge software ecosystem",
+  "description": "\n\nzorro-forge.store is the home of the Zorro Forge ecosystem: a Vue storefront where each product has its own page, documentation, gallery, and download or checkout flow.\n\nIt covers one-time version licenses and subscriptions through Stripe, gated desktop and mobile downloads, user accounts, update notifications, promotions, and SEO landing pages. The catalog includes Zorro's Forge, Anvil Browser, Clippy The Sidekick, Vido, and Medio Streamspace.\n\nBuilt and operated by one developer.",
+  "links": [
+    { "label": "Visit the store", "url": "https://zorro-forge.store/" },
+    { "label": "All products", "url": "https://zorro-forge.store/products" },
+    { "label": "Vue.js", "url": "https://vuejs.org/" },
+    { "label": "Stripe", "url": "https://stripe.com/" },
+    { "label": "Cloudflare", "url": "https://www.cloudflare.com/" }
+  ],
+  "media": {
+    "single": {
+      "maxHeight": 320,
+      "objectFit": "contain"
+    }
+  }
+}

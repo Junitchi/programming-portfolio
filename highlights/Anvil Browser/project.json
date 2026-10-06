@@ -1,0 +1,18 @@
+{
+  "title": "Anvil Browser",
+  "subtitle": "Fast, customizable Chromium browser",
+  "description": "\n\nAnvil is a free desktop web browser built on Chromium for people who want a browser they can shape: a vertical tab sidebar with tab groups, side-by-side split view, Chrome and Firefox extension support, plugins, and eight themes.\n\nIt also ships a built-in ad and tracker blocker, an encrypted password manager, opt-in local read aloud, and end-to-end encrypted sync on your own storage.\n\nAvailable now as an early-access download for Windows, macOS (Apple Silicon), and Linux.",
+  "links": [
+    { "label": "Product page", "url": "https://zorro-forge.store/products/anvil-browser" },
+    { "label": "Documentation", "url": "https://zorro-forge.store/products/anvil-browser/docs" },
+    { "label": "Vue.js", "url": "https://vuejs.org/" },
+    { "label": "Electron", "url": "https://www.electronjs.org/" },
+    { "label": "Chromium", "url": "https://www.chromium.org/" }
+  ],
+  "media": {
+    "single": {
+      "maxHeight": 320,
+      "objectFit": "contain"
+    }
+  }
+}
