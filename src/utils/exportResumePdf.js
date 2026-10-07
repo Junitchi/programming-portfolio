@@ -121,6 +121,76 @@ function hardenCloneText (root, pageWidthPx) {
 }
 
 /**
+ * Measure every word in the (laid out) clone so an invisible, selectable
+ * text layer can be placed exactly over the rasterized page image.
+ */
+function collectWords (root) {
+  const doc = root.ownerDocument
+  const view = doc.defaultView
+  const origin = root.getBoundingClientRect()
+  const words = []
+
+  const walker = doc.createTreeWalker(root, NodeFilter.SHOW_TEXT)
+  while (walker.nextNode()) {
+    const node = walker.currentNode
+    const parent = node.parentElement
+    if (!parent || !/\S/.test(node.textContent)) continue
+
+    const style = view.getComputedStyle(parent)
+    if (style.display === 'none' || style.visibility === 'hidden') continue
+    const fontPx = parseFloat(style.fontSize) || 16
+    const transform = style.textTransform
+
+    const regex = /\S+/g
+    let match
+    while ((match = regex.exec(node.textContent))) {
+      const range = doc.createRange()
+      range.setStart(node, match.index)
+      range.setEnd(node, match.index + match[0].length)
+      const rect = range.getBoundingClientRect()
+      if (!rect.width || !rect.height) continue
+
+      let text = match[0]
+      if (transform === 'uppercase') text = text.toUpperCase()
+      else if (transform === 'lowercase') text = text.toLowerCase()
+
+      words.push({
+        text,
+        x: rect.left - origin.left,
+        y: rect.top - origin.top,
+        width: rect.width,
+        height: rect.height,
+        fontPx,
+        bold: parseInt(style.fontWeight, 10) >= 600
+      })
+    }
+  }
+
+  return words
+}
+
+function addTextLayer (pdf, words, page) {
+  const pxToIn = page.widthIn / page.widthPx
+  const pxToPt = 72 * pxToIn
+
+  words.forEach((word) => {
+    const fontSize = word.fontPx * pxToPt
+    pdf.setFont('helvetica', word.bold ? 'bold' : 'normal')
+    pdf.setFontSize(fontSize)
+
+    const targetPt = word.width * pxToPt
+    const naturalPt = pdf.getTextWidth(word.text) * 72
+    // jsPDF takes charSpace in document units (inches here), not points
+    const charSpace = word.text.length > 1 ? (targetPt - naturalPt) / word.text.length / 72 : 0
+
+    pdf.text(word.text, word.x * pxToIn, (word.y + word.height * 0.8) * pxToIn, {
+      renderingMode: 'invisible',
+      charSpace
+    })
+  })
+}
+
+/**
  * Fit overflowing export content by scaling root rem units.
  */
 async function shrinkIfOverflow (element, page) {
@@ -197,6 +267,7 @@ export async function exportStyledResumePdf ({ element, frame, orientation, file
       import('html2canvas').then((mod) => mod.default)
     ])
 
+    let words = []
     const canvas = await html2canvas(element, {
       useCORS: true,
       backgroundColor,
@@ -208,6 +279,7 @@ export async function exportStyledResumePdf ({ element, frame, orientation, file
       scrollY: 0,
       onclone: (_doc, clone) => {
         hardenCloneText(clone, page.widthPx)
+        words = collectWords(clone)
       }
     })
 
@@ -220,6 +292,7 @@ export async function exportStyledResumePdf ({ element, frame, orientation, file
 
     const imgData = canvas.toDataURL('image/png')
     pdf.addImage(imgData, 'PNG', 0, 0, page.widthIn, page.heightIn, undefined, 'FAST')
+    addTextLayer(pdf, words, page)
     pdf.save(filename)
   } finally {
     resetExportContent(element, previous)

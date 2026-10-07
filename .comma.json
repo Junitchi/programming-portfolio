@@ -1,0 +1,19 @@
+{
+  "commands": [
+    {
+      "id": 1,
+      "name": "npm run serve",
+      "command": "npm run serve"
+    },
+    {
+      "id": 2,
+      "name": "npm run build",
+      "command": "npm run build"
+    },
+    {
+      "id": 3,
+      "name": "npm run deploy",
+      "command": "npm run deploy"
+    }
+  ]
+}

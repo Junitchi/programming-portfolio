@@ -11,6 +11,17 @@ export const RESUME = {
     'Passionate Software Developer skilled in cross-platform systems, app development, and database management. Proficient in SDLC, dedicated to writing clean, efficient code. Open to remote and hybrid roles.',
   experience: [
     {
+      company: 'Zorro Forge, Moca P.R.',
+      role: 'Founder & Software Architect',
+      period: 'Mar 2026 – Present',
+      bullets: [
+        'Architected and shipped an ecosystem of five productivity and creative desktop apps, owning the full lifecycle from design to public release.',
+        'Built Anvil, an Electron-based Chromium browser with a vertical tab sidebar, split view, and Chrome/Firefox extension support.',
+        'Engineered a procedural 3D asset generator that exports OBJ/MTL models and textures for external game engines.',
+        'Developed a desktop video editor using FFmpeg for timeline rendering and clip processing, plus cross-platform media streaming and clipboard tools with React Native and Vue.'
+      ]
+    },
+    {
       company: 'Multisystems Inc, San Juan P.R.',
       role: 'Software Developer',
       period: 'Mar 2024 – Mar 2026',
